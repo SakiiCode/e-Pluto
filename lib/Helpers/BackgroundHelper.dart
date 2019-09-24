@@ -1,25 +1,25 @@
-import 'dart:ui';
-import 'dart:math';
-import '../Helpers/encrypt_codec.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../Helpers/DBHelper.dart';
-
-import 'SettingsHelper.dart';
-import 'package:flutter/material.dart';
 import 'dart:async';
-import '../Helpers/SettingsHelper.dart';
-import '../globals.dart' as globals;
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'dart:math';
+
 import 'package:background_fetch/background_fetch.dart';
-import '../Datas/Student.dart';
-import '../Helpers/TimetableHelper.dart';
-import '../Utils/StringFormatter.dart';
-import '../Utils/AccountManager.dart';
-import '../Datas/User.dart';
-import '../Datas/Account.dart';
-import '../Datas/Note.dart';
-import '../Datas/Lesson.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import '../Datas/Account.dart';
+import '../Datas/Lesson.dart';
+import '../Datas/Note.dart';
+import '../Datas/Student.dart';
+import '../Datas/User.dart';
+import '../Helpers/DBHelper.dart';
+import '../Helpers/SettingsHelper.dart';
+import '../Helpers/TimetableHelper.dart';
+import '../Helpers/encrypt_codec.dart';
+import '../Utils/AccountManager.dart';
+import '../Utils/StringFormatter.dart';
+import '../globals.dart' as globals;
+import 'SettingsHelper.dart';
 
 
 class BackgroundHelper {
@@ -27,13 +27,8 @@ class BackgroundHelper {
       await SettingsHelper().getCanSyncOnData();
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
 
-  void doEvaluations(Account account) async {
-    await account.refreshStudentString(true);
-    List<Evaluation> offlineEvals = account.student.Evaluations;
-    // testing:
-    // offlineEvals.removeAt(0);
-    await account.refreshStudentString(false);
-    List<Evaluation> evals = account.student.Evaluations;
+  void doEvaluations(List<Evaluation> offlineEvals, List<Evaluation> evals) async {
+    print("TEST 2");
 
     for (Evaluation e in evals) {
       bool exist = false;
@@ -64,14 +59,7 @@ class BackgroundHelper {
     }
   }
 
-  void doNotes(Account account) async {
-    await account.refreshStudentString(true);
-    List<Note> offlineNotes = account.notes;
-    await account.refreshStudentString(false);
-    List<Note> notes = account.notes;
-    // testing:
-    // offlineNotes.removeAt(0);
-
+  void doNotes(List<Note> offlineNotes, List<Note> notes) async {
     for (Note n in notes) {
       if (!offlineNotes.map((Note note) => note.id).contains(n.id)) {
         print(offlineNotes.map((Note note) => note.id).toList());
@@ -93,14 +81,7 @@ class BackgroundHelper {
     }
   }
 
-  void doAbsences(Account account) async {
-    await account.refreshStudentString(true);
-    Map<String, List<Absence>> offlineAbsences = account.absents;
-    await account.refreshStudentString(false);
-    Map<String, List<Absence>> absences = account.absents;
-    // testing:
-    // offlineAbsences.remove(offlineAbsences.keys.first);
-
+  void doAbsences(Map<String, List<Absence>> offlineAbsences, Map<String, List<Absence>> absences) async {
     if (absences != null)
       absences.forEach((String date, List<Absence> absenceList) {
         for (Absence absence in absenceList) {
@@ -116,7 +97,7 @@ class BackgroundHelper {
               importance: Importance.Max,
               priority: Priority.High,
               color: Colors.blue,
-              groupKey: account.user.username + absence.Type,);
+              groupKey: absenceList.first.owner.username + absence.Type,);
             var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
             var platformChannelSpecifics = new NotificationDetails(
                 androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
@@ -145,6 +126,36 @@ class BackgroundHelper {
 
     for (Lesson lesson in lessons) {
       bool exist = false;
+
+      // Értesítés a következő óráról WIP
+
+      if (false) {
+        print("1");
+        if (lesson.date.isAfter(DateTime.now()) && lesson.id != lessons.last.id) {
+          print("2");
+          int index = lessons.indexOf(lesson);
+          print("index: " + index.toString());
+          if (lessons[index].date == lessons[index+1].date) {
+            print("3");
+            print(lesson.end.toIso8601String());
+            print(lessons[index+1].subject);
+            var scheduledNotificationDateTime = lesson.end;
+            var androidPlatformChannelSpecifics = new AndroidNotificationDetails('next-lesson', 'Következő óra', 'Értesítés a következő óráról', playSound: false,);
+            var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
+            NotificationDetails platformChannelSpecifics = new NotificationDetails(
+                androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+            await flutterLocalNotificationsPlugin.schedule(
+                0,
+                'Következő óra: ' + lessons[index+1].subject + " " + (lessons[index+1].start.minute - DateTime.now().minute).toString() + " perc",
+                lessons[index+1].room,
+                scheduledNotificationDateTime,
+                platformChannelSpecifics,
+              androidAllowWhileIdle: true
+            );
+          }
+        }
+      }
+
       for (Lesson offlineLesson in lessonsOffline) {
         exist = (lesson.id == offlineLesson.id &&
             ((lesson.isMissed && !offlineLesson.isMissed) ||
@@ -190,22 +201,36 @@ class BackgroundHelper {
     List accounts = List();
     for (User user in await AccountManager().getUsers())
       accounts.add(Account(user));
-    for (Account account in globals.accounts) {
+    print("accounts.length: " + accounts.length.toString());
+    for (Account account in accounts) {
       try {
-        doEvaluations(account);
+        print(account.user.name);
+        await account.refreshStudentString(true);
+
+        List<Evaluation> offlineEvals = account.student.Evaluations;
+        print(offlineEvals.length);
+        // testing:
+        //offlineEvals.removeAt(0);
+        List<Note> offlineNotes = account.notes;
+        // testing:
+        //offlineNotes.removeAt(0);
+        Map<String, List<Absence>> offlineAbsences = account.absents;
+        // testing:
+        //offlineAbsences.remove(offlineAbsences.keys.first);
+
+        await account.refreshStudentString(false);
+
+        List<Evaluation> evals = account.student.Evaluations;
+        List<Note> notes = account.notes;
+        Map<String, List<Absence>> absences = account.absents;
+
+        doEvaluations(offlineEvals, evals);
+        doNotes(offlineNotes, notes);
+        doAbsences(offlineAbsences, absences);
       } catch (e) {
         print(e);
       }
-      try {
-        doNotes(account);
-      } catch (e) {
-        print(e);
-      }
-      try {
-        doAbsences(account);
-      } catch (e) {
-        print(e);
-      }
+
       try {
         doLessons(account);
       } catch (e) {

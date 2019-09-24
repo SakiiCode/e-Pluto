@@ -1,13 +1,16 @@
 import 'dart:convert' show json;
 import 'dart:io';
+import 'dart:math';
 
 import 'package:background_fetch/background_fetch.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:e_szivacs/Datas/Training.dart';
 import 'package:e_szivacs/generated/i18n.dart';
+import 'package:e_szivacs/screens/messageScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info/package_info.dart';
 
@@ -19,6 +22,7 @@ import 'Helpers/DBHelper.dart';
 import 'Helpers/RequestHelper.dart';
 import 'Helpers/SettingsHelper.dart';
 import 'Helpers/UserInfoHelper.dart';
+import 'Helpers/encrypt_codec.dart';
 import 'Utils/AccountManager.dart';
 import 'Utils/ColorManager.dart';
 import 'Utils/Saver.dart' as Saver;
@@ -39,9 +43,6 @@ import 'screens/settingsScreen.dart';
 import 'screens/statisticsScreen.dart';
 import 'screens/studentScreen.dart';
 import 'screens/timeTableScreen.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'dart:math';
-import 'Helpers/encrypt_codec.dart';
 
 bool isNew = true;
 
@@ -63,10 +64,7 @@ class MyApp extends StatelessWidget {
             ],
             supportedLocales: S.delegate.supportedLocales,
             locale: globals.lang != "auto" ? Locale(globals.lang) : null,
-            onGenerateTitle: (BuildContext context) =>
-            S
-                .of(context)
-                .title,
+            onGenerateTitle: (BuildContext context) => S.of(context).title,
             title: "e-Szivacs 2",
             theme: theme,
             routes: <String, WidgetBuilder>{
@@ -78,6 +76,7 @@ class MyApp extends StatelessWidget {
               '/homework': (_) => new HomeworkScreen(),
               '/evaluations': (_) => new EvaluationsScreen(),
               '/notes': (_) => new NotesScreen(),
+              '/messages': (_) => new MessageScreen(),
               '/absents': (_) => new AbsentsScreen(),
               '/accounts': (_) => new AccountsScreen(),
               '/settings': (_) => new SettingsScreen(),
@@ -243,10 +242,13 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   void initJson() async {
-    final String data =
-        await DefaultAssetBundle.of(context).loadString("assets/data.json");
+    String data = "";//await DefaultAssetBundle.of(context).loadString("assets/data.json");
+
+    data = await RequestHelper().getInstitutes();
 
     globals.jsonres = json.decode(data);
+
+    print(globals.jsonres.length);
 
     globals.jsonres.sort((dynamic a, dynamic b) {
       return a["Name"].toString().compareTo(b["Name"].toString());
@@ -297,11 +299,7 @@ class LoginScreenState extends State<LoginScreen> {
           });
           schoolSelected = false;
         } else {
-          //iskolák lekérése
-
-          //bejelentkezés
-
-          /*String instCode = globals.selectedSchoolCode; //suli kódja
+          String instCode = globals.selectedSchoolCode; //suli kĂłdja
           String jsonBody = "institute_code=" +
               instCode +
               "&userName=" +
@@ -349,13 +347,13 @@ class LoginScreenState extends State<LoginScreen> {
             print(e);
             setState(() {
               if (code == "invalid_grant") {
-                passwordError = "hibás felasználónév vagy jelszó";
+                passwordError = "hibĂĄs felasznĂĄlĂłnĂŠv vagy jelszĂł";
               /*} else if (bearerResp.statusCode == 403) {
-                passwordError = "hibás felasználónév vagy jelszó";*/
+                passwordError = "hibĂĄs felasznĂĄlĂłnĂŠv vagy jelszĂł";*/
               } else if (code == "invalid_password") {
-                passwordError = "hibás felasználónév vagy jelszó";
+                passwordError = "hibĂĄs felasznĂĄlĂłnĂŠv vagy jelszĂł";
               } else {
-                passwordError = "hálózati probléma";
+                passwordError = "hĂĄlĂłzati problĂŠma";
               }
             });
           }
@@ -380,13 +378,14 @@ class LoginScreenState extends State<LoginScreen> {
           context: context,
           builder: (BuildContext context) {
             return new MyDialog();
-          });
+          }).then((dynamic){
+        setState(() {});
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    initJson();
 
     return new WillPopScope(
         onWillPop: () {
@@ -627,7 +626,8 @@ class MyDialog extends StatefulWidget {
 
   @override
   State createState() {
-    globals.searchres = globals.jsonres;
+    print(globals.jsonres.length);
+    globals.searchres.addAll(globals.jsonres);
     return myDialogState;
   }
 }
@@ -688,6 +688,8 @@ class MyDialogState extends State<MyDialog> {
     setState(() {
       globals.searchres.clear();
       globals.searchres.addAll(globals.jsonres);
+      print(globals.jsonres.length);
+
     });
 
     if (searchText != "") {

@@ -1,16 +1,20 @@
-import 'dart:convert' show utf8, json;
+import 'dart:convert' show json;
 
-import 'User.dart';
-import 'Note.dart';
-import 'Average.dart';
-import 'Student.dart';
-import '../globals.dart';
-import '../Helpers/DBHelper.dart';
-import '../Helpers/RequestHelper.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 import '../Helpers/AbsentHelper.dart';
 import '../Helpers/AverageHelper.dart';
+import '../Helpers/DBHelper.dart';
+import '../Helpers/MessageHelper.dart';
 import '../Helpers/NotesHelper.dart';
+import '../Helpers/RequestHelper.dart';
 import '../Utils/Saver.dart';
+import 'Average.dart';
+import 'Message.dart';
+import 'Note.dart';
+import 'Student.dart';
+import 'User.dart';
 
 class Account {
   Student student;
@@ -21,6 +25,7 @@ class Account {
   Map<String, List<Absence>> absents;
   List<Note> notes;
   List<Average> averages;
+  List<Message> messages;
 
   //todo add a Bearer token here
 
@@ -28,16 +33,23 @@ class Account {
     this.user = user;
   }
 
-  Future<void> refreshStudentString(bool isOffline) async {
+  Future<void> refreshStudentString(bool isOffline, {bool showErrors=true}) async {
     if (isOffline && _studentJson == null) {
       try {
         _studentJson = await DBHelper().getStudentJson(user);
       } catch (e) {
-        print(e);
+        Fluttertoast.showToast(
+            msg: "Hiba a felhasználó olvasása közben",
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0
+        );
       }
+      messages = await MessageHelper().getMessagesOffline(user);
     } else if (!isOffline) {
-      _studentJson = json.decode('{"TermId":-1,"TotalRowCount":-1,"ExceptionsEnum":0,"UserLogin":"'+user.username+'","Password":"'+user.password+'","NeptunCode":"'+user.username+'","CurrentPage":0,"StudentTrainingID":'+user.trainingId+',"LCID":1038,"ErrorMessage":null,"MobileVersion":"1.5","MobileServiceVersion":0}');//TODO  fix await RequestHelper().getStudentString(''));
+      _studentJson = json.decode(await RequestHelper().getStudentString(user, showErrors: showErrors));
       await DBHelper().addStudentJson(_studentJson, user);
+      messages = await MessageHelper().getMessages(user);
     }
 
     student = Student.fromMap(_studentJson, user);

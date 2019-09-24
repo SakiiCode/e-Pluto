@@ -1,8 +1,9 @@
+import 'package:e_szivacs/generated/i18n.dart';
 import 'package:flutter/material.dart';
-import 'globals.dart';
+
 import 'Datas/Account.dart';
 import 'Datas/User.dart';
-import 'package:e_szivacs/generated/i18n.dart';
+import 'globals.dart';
 import 'screens/studentScreen.dart';
 
 BuildContext ctx;
@@ -59,11 +60,15 @@ class GDrawerState extends State<GDrawer> {
         Navigator.pop(context); // close the drawer
         Navigator.pushReplacementNamed(context, "/homework");
         break;
+      case 11:
+        Navigator.pop(context); // close the drawer
+        Navigator.pushReplacementNamed(context, "/messages");
+        break;
     }
   }
-
   @override
   Widget build(BuildContext context) {
+    double c_width = MediaQuery.of(context).size.width*0.5;
     // TODO: implement build
     return new Drawer(
       child: new Container(
@@ -141,8 +146,10 @@ class GDrawerState extends State<GDrawer> {
                       new Container(child: new Icon(
                         Icons.account_circle, color: selectedUser.color,
                         size: 40,), margin: EdgeInsets.only(right: 5),),
-                      new Text(selectedUser.username,
-                        style: new TextStyle(color: null, fontSize: 17.0),),
+                      new Container(
+                        width: 170,
+                        child: Text(selectedUser.username,
+                        style: new TextStyle(color: null, fontSize: 16.0,),),),
                       new Icon(Icons.arrow_drop_down, color: null,),
                     ],
                   ),
@@ -179,7 +186,7 @@ class GDrawerState extends State<GDrawer> {
               padding: EdgeInsets.all(0),
               margin: EdgeInsets.all(0),
             ),
-            height: 50,
+            height: 60,
             padding: EdgeInsets.all(0),
             margin: EdgeInsets.all(0),
           ) : new Container(),
@@ -198,7 +205,7 @@ class GDrawerState extends State<GDrawer> {
           ),
           new ListTile(
             leading: new Icon(
-              Icons.assignment, color: screen == 1 ? Theme.of(context).accentColor : null,),
+              IconData(0xF474, fontFamily: "Material Design Icons"), color: screen == 1 ? Theme.of(context).accentColor : null,),
             title: new Text(S
                 .of(context)
                 .evaluations,
@@ -249,6 +256,18 @@ class GDrawerState extends State<GDrawer> {
               screen = 3;
               Navigator.pop(context); // close the drawer
               Navigator.pushReplacementNamed(context, "/notes");
+            },
+          ),
+          new ListTile(
+            leading: new Icon(
+              IconData(0xF361, fontFamily: "Material Design Icons"),
+              color: screen == 11 ? Theme.of(context).accentColor : null,),
+            title: new Text(S.of(context).messages,
+              style: TextStyle(color: screen == 11 ? Theme.of(context).accentColor : null),),
+            onTap: () {
+              screen = 11;
+              Navigator.pop(context); // close the drawer
+              Navigator.pushReplacementNamed(context, "/messages");
             },
           ),
           new ListTile(
