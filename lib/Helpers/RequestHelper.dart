@@ -25,7 +25,7 @@ class RequestHelper {
     //return json.decode(await response.transform(utf8.decoder).join());
   }
 
-  Future<String> getStuffFromUrl(String url, String accessToken, String schoolCode) async {
+  Future<String> getStuffFromUrl(String url, String body) async {
 
     HttpClient client = new HttpClient();
 
@@ -119,13 +119,43 @@ class RequestHelper {
       );
       return null;
     }
+  }*/
+
+  void seeMessage(int id, User user) async {
+    /*try {
+      String jsonBody =
+          "institute_code=" + user.schoolCode +
+              "&userName=" + user.username +
+              "&password=" + user.password +
+              "&grant_type=password&client_id=919e0c1c-76a2-4646-a2fb-7085bbbf3c56";
+
+      Map<String, dynamic> bearerMap = json.decode(
+          (await RequestHelper().getBearer(jsonBody, user.schoolCode))
+              .body);
+      String code = bearerMap.values.toList()[0];
+
+      await http.post("https://eugyintezes.e-kreta.hu//integration-kretamobile-api/v1/kommunikacio/uzenetek/olvasott",
+          headers: {
+            "Authorization": ("Bearer " + code),
+          },
+          body: "{\"isOlvasott\":true,\"uzenetAzonositoLista\":[$id]}");
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(
+          msg: "Hálózati hiba",
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0
+      );
+      return null;
+    }*/
   }
 
   Future<String> getStudentString(User user, {bool showErrors=true}) async {
-    String instCode = user.schoolCode;
+    String instCode = user.schoolUrl;
     String userName = user.username;
     String password = user.password;
-
+/*
     String jsonBody = "institute_code=" +
         instCode +
         "&userName=" +
@@ -162,9 +192,11 @@ class RequestHelper {
 
       return evaluationsString;
     }
-    return null;
-  }
+    return null;*/
 
+    return getTraining(instCode, userName, password);
+  }
+/*
   Future<String> getEventsString(User user) async {
     String instCode = user.schoolCode;
     String userName = user.username;

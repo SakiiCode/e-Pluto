@@ -204,7 +204,7 @@ class BackgroundHelper {
     print("accounts.length: " + accounts.length.toString());
     for (Account account in accounts) {
       try {
-        print(account.user.name);
+        print(account.user.username);
         await account.refreshStudentString(true);
 
         List<Evaluation> offlineEvals = account.student.Evaluations;

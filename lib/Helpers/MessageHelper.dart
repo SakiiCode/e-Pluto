@@ -11,7 +11,7 @@ class MessageHelper {
   Future<List<Message>> getMessages(User user) async {
     List<Message> messages = new List();
     try {
-      String jsonBody =
+      /* jsonBody =
           "institute_code=" + user.schoolCode +
               "&userName=" + user.username +
               "&password=" + user.password +
@@ -20,8 +20,8 @@ class MessageHelper {
       Map<String, dynamic> bearerMap = json.decode(
           (await RequestHelper().getBearer(jsonBody, user.schoolCode))
               .body);
-      String code = bearerMap.values.toList()[0];
-      String messageSting = await RequestHelper().getMessages(code, user.schoolCode);
+      String code = bearerMap.values.toList()[0];*/
+      String messageSting = await RequestHelper().getMessages(user.schoolUrl, user.username, user.password, user.trainingId);
       var messagesJson = json.decode(messageSting);
       DBHelper().addMessagesJson(messagesJson, user);
 
@@ -61,7 +61,7 @@ class MessageHelper {
   Future<Message> getMessageById(User user, int id) async {
     Message message;
     try {
-      String jsonBody =
+      /*String jsonBody =
           "institute_code=" + user.schoolCode +
               "&userName=" + user.username +
               "&password=" + user.password +
@@ -71,7 +71,10 @@ class MessageHelper {
           (await RequestHelper().getBearer(jsonBody, user.schoolCode))
               .body);
       String code = bearerMap.values.toList()[0];
-      String messageSting = await RequestHelper().getMessageById(id, code, user.schoolCode);
+      String messageSting = await RequestHelper().getMessageById(id, code, user.schoolCode);*/
+      //TODO ezt visszaállítani
+      String messageSting = await RequestHelper().getMessages(user.schoolUrl, user.username, user.password, user.trainingId);
+
       var messagesJson = json.decode(messageSting);
       DBHelper().addMessageByIdJson(id, messagesJson, user);
 

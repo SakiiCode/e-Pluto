@@ -64,9 +64,9 @@ class UserInfoHelper {
     Map<String, dynamic> bearerMap =
     json.decode((await RequestHelper().getBearer(jsonBody, instCode)).body);
 
-    String code = bearerMap.values.toList()[0];*/
+    String code = bearerMap.values.toList()[0];
 
-    print(code);
+    print(code);*/
     String evaluationsString =
         (await RequestHelper().getEvaluations(schoolUrl, userName, password, trainingId));
     Map<String, dynamic> evaluationsMap = json.decode(evaluationsString);

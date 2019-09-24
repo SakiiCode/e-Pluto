@@ -299,7 +299,7 @@ class LoginScreenState extends State<LoginScreen> {
           });
           schoolSelected = false;
         } else {
-          String instCode = globals.selectedSchoolCode; //suli kĂłdja
+          /*String instCode = globals.selectedSchoolCode; //suli kódja
           String jsonBody = "institute_code=" +
               instCode +
               "&userName=" +
@@ -346,15 +346,8 @@ class LoginScreenState extends State<LoginScreen> {
             });
             print(e);
             setState(() {
-              if (code == "invalid_grant") {
-                passwordError = "hibĂĄs felasznĂĄlĂłnĂŠv vagy jelszĂł";
-              /*} else if (bearerResp.statusCode == 403) {
-                passwordError = "hibĂĄs felasznĂĄlĂłnĂŠv vagy jelszĂł";*/
-              } else if (code == "invalid_password") {
-                passwordError = "hibĂĄs felasznĂĄlĂłnĂŠv vagy jelszĂł";
-              } else {
-                passwordError = "hĂĄlĂłzati problĂŠma";
-              }
+              passwordError = "bejelentkezési probléma";//TODO rossz jelszót jelezni
+
             });
           }
         }

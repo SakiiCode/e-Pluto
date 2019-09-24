@@ -9,3 +9,5 @@ build/
 ios/.generated/
 packages
 .flutter-plugins
+.gradle
+assets/data.json

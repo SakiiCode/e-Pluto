@@ -64,13 +64,13 @@ class DBHelper {
     }
 
     if (studentJson == null)
-      await store.record(user.id.toString() + '_messages_json').add(db, json);
+      await store.record(user.username + '_messages_json').add(db, json);
     else
-      await store.record(user.id.toString() + '_messages_json').update(db, json);
+      await store.record(user.username + '_messages_json').update(db, json);
   }
 
   Future<List> getMessagesJson(User user) async {
-    return await store.record(user.id.toString() + '_messages_json').get(
+    return await store.record(user.username + '_messages_json').get(
         db) as List;
   }
 
@@ -82,7 +82,7 @@ class DBHelper {
       print(e);
     }
 
-    String name = user.id.toString() + "-" + id.toString() + '_message_json';
+    String name = user.username + "-" + id.toString() + '_message_json';
 
     if (studentJson == null)
       await store.record(name).add(db, json);
@@ -91,7 +91,7 @@ class DBHelper {
   }
 
   Future<Map<String, dynamic>> getMessageByIdJson(int id, User user) async {
-    String name = user.id.toString() + "-" + id.toString() + '_message_json';
+    String name = user.username + "-" + id.toString() + '_message_json';
 
     return await store.record(name).get(db) as Map<String, dynamic>;
   }
