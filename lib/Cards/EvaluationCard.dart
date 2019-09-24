@@ -379,7 +379,7 @@ class EvaluationCard extends StatelessWidget {
                           !isSingle
                               ? new Expanded(
                                   child: new Container(
-                                    child: new Text(evaluation.owner.name ?? "",
+                                    child: new Text(evaluation.owner.username ?? "",
                                         style: new TextStyle(
                                             color: evaluation.owner.color ??
                                                 Colors.black,

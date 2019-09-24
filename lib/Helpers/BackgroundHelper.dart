@@ -54,7 +54,7 @@ class BackgroundHelper {
             e.trueID(),
             e.Subject + " - " +
                 (e.NumberValue != 0 ? e.NumberValue.toString() : e.Value),
-            e.owner.name + ", " + (e.Theme ?? ""), platformChannelSpecifics,
+            e.owner.username + ", " + (e.Theme ?? ""), platformChannelSpecifics,
             payload: e.trueID().toString());
       }
 
@@ -116,14 +116,14 @@ class BackgroundHelper {
               importance: Importance.Max,
               priority: Priority.High,
               color: Colors.blue,
-              groupKey: account.user.id.toString() + absence.Type,);
+              groupKey: account.user.username + absence.Type,);
             var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
             var platformChannelSpecifics = new NotificationDetails(
                 androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
             flutterLocalNotificationsPlugin.show(
               absence.AbsenceId,
               absence.Subject + " " + absence.TypeName,
-              absence.owner.name +
+              absence.owner.username +
                   (absence.DelayTimeMinutes != 0 ? (", " +
                       absence.DelayTimeMinutes.toString() +
                       " perc késés") : ""), platformChannelSpecifics,

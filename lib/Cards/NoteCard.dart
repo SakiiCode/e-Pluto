@@ -98,7 +98,7 @@ class NoteCard extends StatelessWidget {
 
                     !isSingle ? new Expanded(
                       child: new Container(
-                        child: new Text(note.owner.name, style: new TextStyle(color: Colors.white, fontSize: 15.0)),
+                        child: new Text(note.teacher, style: new TextStyle(color: Colors.white, fontSize: 15.0)),
                         alignment: Alignment(1.0, -1.0),
                       ),
                     ) : new Container(),
@@ -146,7 +146,7 @@ class NoteCard extends StatelessWidget {
 
                     !isSingle ? new Expanded(
                       child: new Container(
-                        child: new Text(note.owner.name, style: new TextStyle(color: Colors.white, fontSize: 15.0)),
+                        child: new Text(note.owner.username, style: new TextStyle(color: Colors.white, fontSize: 15.0)),
                         alignment: Alignment(1.0, -1.0),
                       ),
                     ) : new Container(),

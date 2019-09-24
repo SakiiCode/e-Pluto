@@ -205,7 +205,7 @@ class AbsenceCard extends StatelessWidget {
                     !isSingle ? new Expanded(
                       child: new Container(
                         child: new Text(
-                            absences[0].owner.name, style: new TextStyle(
+                            absences[0].owner.username, style: new TextStyle(
                             fontSize: 18.0, color: absences[0].owner.color)),
                       alignment: Alignment(1.0, 0.0),
                     )) : new Container(),

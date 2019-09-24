@@ -55,7 +55,7 @@ class HomeworkScreenState extends State<HomeworkScreen> {
     });
 
     for (Homework n in homeworks) {
-      if (n.owner.id == selectedUser.id) {
+      if (n.owner.username == selectedUser.username) {
         setState(() {
           selectedHomework.add(n);
         });

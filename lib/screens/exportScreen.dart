@@ -110,7 +110,7 @@ class ExportScreenState extends State<ExportScreen> {
                     }, value: exportOptions[selectedData],),
 
                     (selectedData != 2) ? new DropdownButton(items: globals.users.map((User user){
-                      return DropdownMenuItem(child: Text(user.name), value: user,);
+                      return DropdownMenuItem(child: Text(user.username), value: user,);
                     }).toList(), onChanged: (user){
                       setState(() {
                         selectedUser = user;

@@ -77,15 +77,15 @@ class AccountsScreenState extends State<AccountsScreen> {
                 .ok),
             onPressed: () async {
               Navigator.of(context).pop();
-              users[users.map((User u) => u.id).toList().indexOf(user.id)]
+              users[users.map((User u) => u.username).toList().indexOf(user.username)]
                   .color = selected;
               await saveUsers(users);
               setState(() {
                 globals.users = users;
-                if (globals.selectedUser.id == user.id)
+                if (globals.selectedUser.username == user.username)
                   globals.selectedUser.color = selected;
                 for (Account account in globals.accounts)
-                  if (account.user.id == user.id)
+                  if (account.user.username == user.username)
                     account.user.color = selected;
                 _getListWidgets();
               });
@@ -134,7 +134,7 @@ class AccountsScreenState extends State<AccountsScreen> {
                     child: new Icon(Icons.close, color: Colors.red,),),
               ],
             ),
-            title: new Text(a.user.name),
+            title: new Text(a.user.username),
             leading: GestureDetector(
               child: Icon(Icons.person_outline),
               onTap: () async {
@@ -169,7 +169,7 @@ class AccountsScreenState extends State<AccountsScreen> {
           content: new SingleChildScrollView(
             child: new ListBody(
               children: <Widget>[
-                new Text(S.of(context).delete_confirmation(user.name)),
+                new Text(S.of(context).delete_confirmation(user.username)),
               ],
             ),
           ),

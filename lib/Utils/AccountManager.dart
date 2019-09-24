@@ -31,7 +31,7 @@ class AccountManager {
     try {
       List<User> users = await getUsers();
       for (User u in users)
-        if (u.id == user.id)
+        if (u.username == user.username)
           return;
       users.add(user);
       globals.users = users;
@@ -48,7 +48,7 @@ class AccountManager {
     List<User> users = await getUsers();
     List<User> newUsers = new List();
     for (User u in users)
-      if (u.id!=user.id)
+      if (u.username!=user.username)
         newUsers.add(u);
     if (newUsers.length < 2)
       globals.multiAccount = false;
