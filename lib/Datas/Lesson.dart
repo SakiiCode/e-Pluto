@@ -44,19 +44,26 @@ class Lesson {
   bool get isSubstitution => depTeacher != "";
 
   Lesson.fromJson(Map json) {
-    id = json["LessonId"];
-    count = json["Count"];
-    date = DateTime.parse(json["Date"]);
-    start = DateTime.parse(json["StartTime"]);
-    end = DateTime.parse(json["EndTime"]);
-    subject = json["Subject"];
+    id = json["id"];
+
+    date = DateTime.fromMillisecondsSinceEpoch(int.parse(json["start"].substring(6,19)),isUtc:true);
+    start = DateTime.fromMillisecondsSinceEpoch(int.parse(json["start"].substring(6,19)),isUtc:true);
+    end = DateTime.fromMillisecondsSinceEpoch(int.parse(json["end"].substring(6,19)),isUtc:true);
+
+    count = start.hour~/2-3;
+
+    subject = json["title"].split('(')[0].split(']')[1].trim();
     subjectName = json["SubjectCategoryName"];
-    room = json["ClassRoom"];
-    group = json["ClassGroup"];
-    teacher = json["Teacher"];
+    room = json["location"];
+
+    List<String> details = json["title"].split(' ');
+
+
+    group = details[7];
+    teacher = json["title"].split('(')[2].split(')')[0];
     depTeacher = json["DeputyTeacher"];
-    state = json["State"];
-    stateName = json["StateName"];
+    state = details[0];
+    stateName = details[0];
     presence = json["PresenceType"];
     presenceName = json["PresenceTypeName"];
     theme = json["Theme"];

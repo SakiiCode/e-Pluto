@@ -72,7 +72,7 @@ class TimeTableScreenState extends State<TimeTableScreen> with
   void refreshWeek() async {
     DateTime startDate = now;
     startDate = startDate.add(
-        new Duration(days: (-1 * startDate.weekday + 1 + 7 * relativeWeek)));
+        new Duration(days: (-1 * startDate.weekday + 7 * relativeWeek)));// +1 miatt nálam keddnél kezdi a hetet
     setState(() {
       startDateText = startDate;
     });
@@ -240,7 +240,7 @@ class TimeTableScreenState extends State<TimeTableScreen> with
         style: TextStyle(color: lessonList[index].isMissed
             ? Colors.red
             : lessonList[index].depTeacher != "" ? Colors.deepOrange : null),),
-      subtitle: new Text(lessonList[index].theme),
+      subtitle: new Text(lessonList[index].teacher),
       trailing: new Column(
         crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[

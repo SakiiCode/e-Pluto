@@ -37,11 +37,12 @@ Future <List <Lesson>> getLessonsOffline(DateTime from, DateTime to, User user) 
 
 
 Future<String> getLessonsJson(DateTime from, DateTime to, User user) async {
-  String instCode = user.schoolCode;
+  String schoolUrl = user.schoolUrl;
+  String trainingId = user.trainingId;
   userName = user.username;
   password = user.password;
 
-  String jsonBody =
+  /*String jsonBody =
       "institute_code=" + instCode +
           "&userName=" + userName +
           "&password=" + password +
@@ -50,41 +51,20 @@ Future<String> getLessonsJson(DateTime from, DateTime to, User user) async {
   Map<String, dynamic> bearerMap = json.decode(
       (await RequestHelper().getBearer(jsonBody, instCode))
           .body);
-  String code = bearerMap.values.toList()[0];
+  String code = bearerMap.values.toList()[0];*/
 
-  String timetableString = await RequestHelper().getTimeTable(
-      from.toIso8601String().substring(0, 10),
-      to.toIso8601String().substring(0, 10),
-      code, instCode
-  );
+  String timetableString = await RequestHelper().getTimeTable(schoolUrl, userName, password, trainingId, from, to);
 
   return timetableString;
 }
 
 
 Future <List <Lesson>> getLessons(DateTime from, DateTime to, User user) async {
-  String instCode = user.schoolCode;
-  userName = user.username;
-  password = user.password;
 
-  String jsonBody =
-      "institute_code=" + instCode +
-      "&userName=" + userName +
-      "&password=" + password +
-      "&grant_type=password&client_id=919e0c1c-76a2-4646-a2fb-7085bbbf3c56";
 
-  Map<String, dynamic> bearerMap = json.decode(
-        (await RequestHelper().getBearer(jsonBody, instCode))
-            .body);
-  String code = bearerMap.values.toList()[0];
+  String timetableString = await getLessonsJson(from, to, user);
 
-  String timetableString = await RequestHelper().getTimeTable(
-      from.toIso8601String().substring(0, 10),
-      to.toIso8601String().substring(0, 10),
-      code, instCode
-  );
-
-  List<dynamic> ttMap = json.decode(timetableString);
+  List<dynamic> ttMap = json.decode(timetableString)["calendarData"];
 
   await DBHelper().saveTimetableMap(
       from.year.toString() + "-" + from.month.toString() + "-" +

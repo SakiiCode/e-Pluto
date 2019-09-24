@@ -36,24 +36,23 @@ class Account {
         print(e);
       }
     } else if (!isOffline) {
-      _studentJson = json.decode(await RequestHelper().getStudentString(user));
+      _studentJson = json.decode('{"TermId":-1,"TotalRowCount":-1,"ExceptionsEnum":0,"UserLogin":"'+user.username+'","Password":"'+user.password+'","NeptunCode":"'+user.username+'","CurrentPage":0,"StudentTrainingID":'+user.trainingId+',"LCID":1038,"ErrorMessage":null,"MobileVersion":"1.5","MobileServiceVersion":0}');//TODO  fix await RequestHelper().getStudentString(''));
       await DBHelper().addStudentJson(_studentJson, user);
     }
 
     student = Student.fromMap(_studentJson, user);
-    absents = await AbsentHelper().getAbsentsFrom(student.Absences);
+    absents = new Map<String, List<Absence>>();//await AbsentHelper().getAbsentsFrom(student.Absences);
     await _refreshEventsString(isOffline);
-    notes = await NotesHelper().getNotesFrom(
-        _eventsString, json.encode(_studentJson), user);
-    averages =
-    await AverageHelper().getAveragesFrom(json.encode(_studentJson), user);
+    notes = await NotesHelper().getNotesFrom(await new RequestHelper().getMessages(user.schoolUrl,user.username,user.password,user.trainingId), user);
+    averages = new List<Average>();//await AverageHelper().getAveragesFrom(json.encode(_studentJson), user);
   }
 
   Future<void> _refreshEventsString(bool isOffline) async {
-    if (isOffline)
+    /*if (isOffline)
       _eventsString = await readEventsString(user);
     else
-      _eventsString = await RequestHelper().getEventsString(user);
+      _eventsString = await RequestHelper().getEvents(user); //todo eredetileg eventsString*/
+    _eventsString = "";
   }
 
   List<Evaluation> get midyearEvaluations =>
