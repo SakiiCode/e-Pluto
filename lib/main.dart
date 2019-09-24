@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:background_fetch/background_fetch.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
+import 'package:e_szivacs/Datas/Training.dart';
 import 'package:e_szivacs/generated/i18n.dart';
 import 'package:e_szivacs/screens/messageScreen.dart';
 import 'package:flutter/material.dart';
@@ -237,15 +238,7 @@ final passwordController = new TextEditingController();
 class LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
-    loggingIn = false;
     super.initState();
-
-    initJson();
-/*
-    DynamicTheme.of(context).setBrightness(Brightness.light).then((void a){
-      setStateHere();
-    });
-*/
   }
 
   void initJson() async {
@@ -306,34 +299,32 @@ class LoginScreenState extends State<LoginScreen> {
           });
           schoolSelected = false;
         } else {
-          String instCode = globals.selectedSchoolCode; //suli kódja
+          String instCode = globals.selectedSchoolCode; //suli kĂłdja
           String jsonBody = "institute_code=" +
               instCode +
               "&userName=" +
               userName +
               "&password=" +
               password +
-              "&grant_type=password&client_id=919e0c1c-76a2-4646-a2fb-7085bbbf3c56";
+              "&grant_type=password&client_id=919e0c1c-76a2-4646-a2fb-7085bbbf3c56";*/
 
           try {
-            bearerResp = await RequestHelper().getBearer(jsonBody, instCode);
+            /*bearerResp = await RequestHelper().getBearer(jsonBody, instCode);
             Map<String, dynamic> bearerMap = json.decode(bearerResp.body);
             code = bearerMap.values.toList()[0];
 
             Map<String, String> userInfo =
-            await UserInfoHelper().getInfo(instCode, userName, password);
-
+            await UserInfoHelper().getInfo(instCode, userName, password);*/
+            String institutes = await RequestHelper().getTraining(globals.selectedSchoolUrl, userName, password);
+            Training training = Training.fromJson(json.decode(institutes));
             setState(() {
               User user = new User(
-                  int.parse(userInfo["StudentId"]),
                   userName,
                   password,
-                  userInfo["StudentName"],
-                  instCode,
                   globals.selectedSchoolUrl,
                   globals.selectedSchoolName,
-                  userInfo["ParentName"],
-                  userInfo["ParentId"]);
+                  training.name,
+                  training.id);
               AccountManager().addUser(user);
 
               globals.users.add(user);
@@ -344,7 +335,7 @@ class LoginScreenState extends State<LoginScreen> {
               for (User user in globals.users)
                 globals.accounts.add(Account(user));
               globals.selectedAccount = globals.accounts
-                  .firstWhere((Account account) => account.user.id == user.id);
+                  .firstWhere((Account account) => account.user.username == user.username);
               globals.selectedUser = user;
 
               Navigator.pushNamed(context, "/main");
@@ -356,13 +347,13 @@ class LoginScreenState extends State<LoginScreen> {
             print(e);
             setState(() {
               if (code == "invalid_grant") {
-                passwordError = "hibás felasználónév vagy jelszó";
-              } else if (bearerResp.statusCode == 403) {
-                passwordError = "hibás felasználónév vagy jelszó";
+                passwordError = "hibĂĄs felasznĂĄlĂłnĂŠv vagy jelszĂł";
+              /*} else if (bearerResp.statusCode == 403) {
+                passwordError = "hibĂĄs felasznĂĄlĂłnĂŠv vagy jelszĂł";*/
               } else if (code == "invalid_password") {
-                passwordError = "hibás felasználónév vagy jelszó";
+                passwordError = "hibĂĄs felasznĂĄlĂłnĂŠv vagy jelszĂł";
               } else {
-                passwordError = "hálózati probléma";
+                passwordError = "hĂĄlĂłzati problĂŠma";
               }
             });
           }
@@ -549,13 +540,10 @@ class LoginScreenState extends State<LoginScreen> {
                                       child: new FlatButton(
                                         onPressed: () {
                                           showSelectDialog();
-                                          setState(() {});
+                                          //setState(() {});
                                         },
                                         child: new Text(
-                                          globals.selectedSchoolName ??
-                                              S
-                                                  .of(context)
-                                                  .choose,
+                                          globals.selectedSchoolName ?? S.of(context).choose,
                                           style: new TextStyle(
                                               fontSize: 21.0,
                                               color: Colors.blue),
@@ -721,18 +709,18 @@ class MyDialogState extends State<MyDialog> {
           title: new Text(globals.searchres[index]["Name"]),
           subtitle: new Text(globals.searchres[index]["Url"]),
           onTap: () {
-            globals.selectedSchoolCode =
-            globals.searchres[index]["InstituteCode"];
-            globals.selectedSchoolUrl = globals.searchres[index]["Url"];
             globals.selectedSchoolName = globals.searchres[index]["Name"];
+            globals.selectedSchoolCode = globals.searchres[index]["OMCode"];
+            globals.selectedSchoolUrl = globals.searchres[index]["Url"];
 
             setState(() {
               Navigator.pop(context);
+              globals.selectedSchoolName;
             });
           },
         ),
         new Container(
-          child: new Text(globals.searchres[index]["City"]),
+          child: new Text(globals.searchres[index]["OMCode"]),
           alignment: new Alignment(1.0, 0.0),
         )
       ],

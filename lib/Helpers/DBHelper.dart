@@ -45,13 +45,13 @@ class DBHelper {
     }
 
     if (studentJson == null)
-      await store.record(user.id.toString() + '_student_json').add(db, json);
+      await store.record(user.username + '_student_json').add(db, json);
     else
-      await store.record(user.id.toString() + '_student_json').update(db, json);
+      await store.record(user.username + '_student_json').update(db, json);
   }
 
   Future<Map> getStudentJson(User user) async {
-    return await store.record(user.id.toString() + '_student_json').get(
+    return await store.record(user.username + '_student_json').get(
         db) as Map;
   }
 
@@ -125,15 +125,15 @@ class DBHelper {
     }
 
     if (timetableMap == null)
-      await store.record('timetable_' + time + user.id.toString()).add(
+      await store.record('timetable_' + time + user.username).add(
           db, json);
     else
-      await store.record('timetable_' + time + user.id.toString()).update(
+      await store.record('timetable_' + time + user.username).update(
           db, json);
   }
 
   Future<List<dynamic>> getTimetableMap(String time, User user) async {
-    return await store.record('timetable_' + time + user.id.toString()).get(
+    return await store.record('timetable_' + time + user.username).get(
         db) as List<dynamic>;
   }
 }

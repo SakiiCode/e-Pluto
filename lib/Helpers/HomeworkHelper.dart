@@ -21,7 +21,7 @@ class HomeworkHelper {
       homeworks.add(average);
     });
     homeworks
-        .sort((Homework a, Homework b) => a.owner.name.compareTo(b.owner.name));
+        .sort((Homework a, Homework b) => a.owner.username.compareTo(b.owner.username));
 
     return homeworks;
   }
@@ -46,7 +46,7 @@ class HomeworkHelper {
         homeworks.add(homework);
       }
     homeworks
-        .sort((Homework a, Homework b) => a.owner.name.compareTo(b.owner.name));
+        .sort((Homework a, Homework b) => a.owner.username.compareTo(b.owner.username));
 
     return homeworks;
   }
@@ -56,11 +56,11 @@ class HomeworkHelper {
     List<User> users = await AccountManager().getUsers();
 
     for (User user in users) {
-      String instCode = user.schoolCode; //suli kódja
+      String schoolUrl = user.schoolUrl;
       String userName = user.username;
       String password = user.password;
-
-      String jsonBody = "institute_code=" +
+      String trainingId = user.trainingId;
+      /*String jsonBody = "institute_code=" +
           instCode +
           "&userName=" +
           userName +
@@ -71,26 +71,22 @@ class HomeworkHelper {
       Map<String, dynamic> bearerMap = json
           .decode((await RequestHelper().getBearer(jsonBody, instCode)).body);
 
-      String code = bearerMap.values.toList()[0];
+      String code = bearerMap.values.toList()[0];*/
 
       DateTime startDate = new DateTime.now();
       DateTime from = startDate.subtract(new Duration(days: time));
       DateTime to = startDate;
 
-      String timetableString = (await RequestHelper().getTimeTable(
-              from.toIso8601String().substring(0, 10),
-              to.toIso8601String().substring(0, 10),
-              code,
-              instCode));
+      String timetableString = (await RequestHelper().getTimeTable(schoolUrl, userName, password, trainingId, from, to));
       List<dynamic> ttMap = json.decode(timetableString);
-      //saveTimetable(timetableString, from.year.toString()+"-"+from.month.toString()+"-"+from.day.toString()+"_"+to.year.toString()+"-"+to.month.toString()+"-"+to.day.toString(), user);
+      saveTimetable(timetableString, from.year.toString()+"-"+from.month.toString()+"-"+from.day.toString()+"_"+to.year.toString()+"-"+to.month.toString()+"-"+to.day.toString(), user);
       List<Lesson> lessons = new List();
       List<Map<String, dynamic>> hwmapuser = new List();
 
-      for (dynamic d in ttMap) {
+      /*for (dynamic d in ttMap) { TODO: ez mit csinál
         if (d["TeacherHomeworkId"] != null) {
           String homeworkString = (await RequestHelper()
-                  .getHomework(code, instCode, d["TeacherHomeworkId"]));
+                  .getHomework(instCode, d["TeacherHomeworkId"]));
           if (homeworkString == "[]")
             homeworkString = "[" +
                 (await RequestHelper().getHomeworkByTeacher(
@@ -109,7 +105,7 @@ class HomeworkHelper {
             hwmapuser.add(d as Map<String, dynamic>);
           }
         }
-      }
+      }*/
 
       Map<String, User> userProperty = <String, User>{"user": user};
       saveHomework(json.encode(hwmapuser), user);

@@ -14,7 +14,7 @@ Future<String> get _localFolder async {
 
 Future<File> _localEvaluations(User user) async {
   final path = await _localFolder;
-  String suffix = user.id.toString();
+  String suffix = user.username;
   return new File('$path/evaluations_$suffix.json');
 }
 
@@ -41,7 +41,7 @@ Future<Map<String, dynamic>> readEvaluations(User user) async {
 
 Future<File> _localEvents(User user) async {
   final path = await _localFolder;
-  String suffix = user.id.toString();
+  String suffix = user.username;
   return new File('$path/events_$suffix.json');
 }
 
@@ -67,7 +67,7 @@ Future<List<dynamic>> readEvents(User user) async {
 
 Future<File> _localNotes(User user) async {
   final path = await _localFolder;
-  String suffix = user.id.toString();
+  String suffix = user.username;
   return new File('$path/notes.json');
 }
 
@@ -93,7 +93,7 @@ Future<List<dynamic>> readNotes(User user) async {
 
 Future<File> _localHomework(User user) async {
   final path = await _localFolder;
-  String suffix = user.id.toString();
+  String suffix = user.username;
   return new File('$path/' + suffix + '_homework.json');
 }
 
@@ -124,7 +124,7 @@ Future<List<Map<String, dynamic>>> readHomework(User user) async {
 
 Future<File> _localTimeTable(String time, User user) async {
   final path = await _localFolder;
-  String suffix = user.id.toString();
+  String suffix = user.username;
   return new File('$path/timetable_$time-$suffix.json');
 }
 

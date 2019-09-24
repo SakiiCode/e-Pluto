@@ -29,7 +29,7 @@ class GDrawerState extends State<GDrawer> {
     setState(() {
       selectedUser = user;
       selectedAccount = accounts.firstWhere(
-              (Account account) => account.user.id == user.id);
+              (Account account) => account.user.username == user.username);
     });
     switch (screen) {
       case 0:
@@ -148,7 +148,7 @@ class GDrawerState extends State<GDrawer> {
                         size: 40,), margin: EdgeInsets.only(right: 5),),
                       new Container(
                         width: 170,
-                        child: Text(selectedUser.name,
+                        child: Text(selectedUser.username,
                         style: new TextStyle(color: null, fontSize: 16.0,),),),
                       new Icon(Icons.arrow_drop_down, color: null,),
                     ],
@@ -163,7 +163,7 @@ class GDrawerState extends State<GDrawer> {
                         child: new Row(
                           children: <Widget>[
                             new Icon(Icons.account_circle, color: user.color,),
-                            new Text(user.name),
+                            new Text(user.username),
                           ],
                         ),
                     );

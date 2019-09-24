@@ -74,7 +74,7 @@ class TimeTableScreenState extends State<TimeTableScreen>
     ended = false;
     DateTime startDate = now;
     startDate = startDate.add(
-        new Duration(days: (-1 * startDate.weekday + 1 + 7 * relativeWeek)));
+        new Duration(days: (-1 * startDate.weekday + 7 * relativeWeek)));// +1 miatt nálam keddnél kezdi a hetet
     setState(() {
       lessonsWeek = null;
       startDateText = startDate;

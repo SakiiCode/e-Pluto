@@ -14,7 +14,7 @@ class RequestHelper {
 
   Future<String> getInstitutes() async {
     final String url =
-        "https://kretaglobalmobileapi.ekreta.hu/api/v1/Institute";
+        "mobilecloudservice.cloudapp.net/MobileServiceLib/MobileCloudService.svc/GetAllNeptunMobileUrls";
 
     var r = nhttp.NativeHttpRequest.getRequest(url, headers: {
       "HOST": "kretaglobalmobileapi.ekreta.hu",
@@ -29,47 +29,49 @@ class RequestHelper {
 
     HttpClient client = new HttpClient();
 
-    final HttpClientRequest request = await client.getUrl(Uri.parse(url))
-      ..headers.add("HOST", schoolCode + ".e-kreta.hu")
-      ..headers.add("Authorization", "Bearer " + accessToken);
+    final HttpClientRequest request = await client.postUrl(Uri.parse(url))
+      ..headers.set("Content-Type","application/json; charset=utf-8")
+      ..headers.set("Content-Length",body.length)
+      ..headers.set("Expect","100-continue")
+      ..headers.set("Host",url.split("/")[2])..add(utf8.encode(body));
+
+
 
     return await (await request.close()).transform(utf8.decoder).join();
   }
 
-  Future<String> getMessages(String accessToken, String schoolCode) =>
-      getStuffFromUrl("https://eugyintezes.e-kreta.hu/integration-kretamobile-api/v1/kommunikacio/postaladaelemek/sajat", accessToken, schoolCode);
+  Future<String> getEvaluations(String schoolUrl, String userName, String password, String trainingId) =>
+      getStuffFromUrl(schoolUrl + "/GetMarkbookData",'{"filter":{"TermID":0},"TotalRowCount":-1,"ExceptionsEnum":0,"UserLogin":"'+userName+'","Password":"'+password+'","NeptunCode":"'+userName+'","CurrentPage":1,"StudentTrainingID":"'+trainingId+'","LCID":1038,"ErrorMessage":null,"MobileVersion":"1.5","MobileServiceVersion":0}');
 
-  Future<String> getMessageById(int id, String accessToken, String schoolCode) =>
-      getStuffFromUrl("https://eugyintezes.e-kreta.hu/integration-kretamobile-api/v1/kommunikacio/postaladaelemek/$id", accessToken, schoolCode);
+  Future<String> getForums(String schoolUrl, String userName, String password, String trainingId) =>
+      getStuffFromUrl(schoolUrl + "/GetForums",'{"TotalRowCount":-1,"ExceptionsEnum":0,"ForumName":"","UserLogin":"'+userName+'","Password":"'+password+'","NeptunCode":"'+userName+'","CurrentPage":0,"StudentTrainingID":'+trainingId+',"LCID":1038,"ErrorMessage":null,"MobileVersion":"1.5","MobileServiceVersion":0}');
 
-  Future<String> getEvaluations(String accessToken, String schoolCode) =>
-      getStuffFromUrl("https://" + schoolCode + ".e-kreta.hu"
-      + "/mapi/api/v1/Student", accessToken, schoolCode);
+  Future<String> getMessages(String schoolUrl, String userName, String password, String trainingId) =>
+      getStuffFromUrl(schoolUrl + "/GetMessages",'{"TotalRowCount":-1,"ExceptionsEnum":0,"ForumName":"","UserLogin":"'+userName+'","Password":"'+password+'","NeptunCode":"'+userName+'","CurrentPage":0,"StudentTrainingID":'+trainingId+',"LCID":1038,"ErrorMessage":null,"MobileVersion":"1.5","MobileServiceVersion":0}');
 
-  Future<String> getHomework(String accessToken, String schoolCode,
-      int id) => getStuffFromUrl("https://" + schoolCode +
-      ".e-kreta.hu/mapi/api/v1/HaziFeladat/TanuloHaziFeladatLista/" +
-      id.toString(), accessToken, schoolCode);
 
-  Future<String> getHomeworkByTeacher(String accessToken,
+  /*Future<String> getHomeworkByTeacher(String accessToken,
       String schoolCode, int id) => getStuffFromUrl("https://" + schoolCode +
       ".e-kreta.hu/mapi/api/v1/HaziFeladat/TanarHaziFeladat/" + id.toString(),
-      accessToken, schoolCode);
+      accessToken, schoolCode);*/
 
-  Future<String> getEvents(String accessToken, String schoolCode) =>
-      getStuffFromUrl("https://" + schoolCode + ".e-kreta.hu/mapi/api/v1/Event",
-      accessToken, schoolCode);
+  Future<String> getEvents(String schoolUrl, String userName, String password, String trainingId) =>
+      getStuffFromUrl(schoolUrl + "/GetPeriods", '{"PeriodTermID":70618,"TotalRowCount":-1,"ExceptionsEnum":0,"UserLogin":"'+userName+'","Password":"'+password+'","NeptunCode":"'+userName+'","CurrentPage":0,"StudentTrainingID":'+trainingId+',"LCID":1038,"ErrorMessage":null,"MobileVersion":"1.5","MobileServiceVersion":0}');
 
-  Future<String> getTimeTable(
-      String from, String to, String accessToken, String schoolCode) =>
-      getStuffFromUrl("https://" +
-          schoolCode +
-          ".e-kreta.hu/mapi/api/v1/Lesson?fromDate=" +
-          from +
-          "&toDate=" +
-          to, accessToken, schoolCode);
+  Future<String> getTimeTable(String schoolUrl, String userName, String password, String trainingId, DateTime from, DateTime to) =>
+      getStuffFromUrl(schoolUrl +"/GetCalendarData", '{"needAllDaylong":false,"TotalRowCount":-1,"ExceptionsEnum":0,"Time":true,"Exam":true,"Task":true,"Apointment":true,"RegisterList":true,"Consultation":true,"startDate":"\/Date('+from.millisecondsSinceEpoch.toString()+')\/","endDate":"\/Date('+to.millisecondsSinceEpoch.toString()+')\/","entityLimit":0,"UserLogin":"'+userName+'","Password":"'+password+'","NeptunCode":"'+userName+'","CurrentPage":0,"StudentTrainingID":'+trainingId+',"LCID":1038,"ErrorMessage":null,"MobileVersion":"1.5","MobileServiceVersion":0}');
 
-  Future<http.Response> getBearer(String jsonBody, String schoolCode) {
+  Future<String> getTraining(String schoolUrl, String userName, String password){
+
+    String url = schoolUrl +"/GetTrainings";
+    String body = '{"OnlyLogin":false,"TotalRowCount":-1,"ExceptionsEnum":0,"UserLogin":"'+userName+'","Password":"'+password+'","NeptunCode":null,"CurrentPage":0,"StudentTrainingID":null,"LCID":1038,"ErrorMessage":null,"MobileVersion":"1.5","MobileServiceVersion":0}';
+    Future<String> response = getStuffFromUrl(url, body);
+    return response;
+  }
+
+
+
+/*Future<http.Response> getBearer(String jsonBody, String schoolCode) {
     try {
       return http.post("https://" + schoolCode + ".e-kreta.hu/idp/api/v1/Token",
           headers: {
@@ -80,7 +82,7 @@ class RequestHelper {
     } catch (e) {
       print(e);
       Fluttertoast.showToast(
-          msg: "Hálózati hiba",
+          msg: "HĂĄlĂłzati hiba",
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0
@@ -110,7 +112,7 @@ class RequestHelper {
     } catch (e) {
       print(e);
       Fluttertoast.showToast(
-          msg: "Hálózati hiba",
+          msg: "HĂĄlĂłzati hiba",
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0
@@ -138,7 +140,7 @@ class RequestHelper {
     } catch (SocketException) {
       if (showErrors)
         Fluttertoast.showToast(
-            msg: "Hálózati hiba",
+            msg: "HĂĄlĂłzati hiba",
             backgroundColor: Colors.red,
             textColor: Colors.white,
             fontSize: 16.0
@@ -147,7 +149,7 @@ class RequestHelper {
 
     if (bearerMap["error"] == "invalid_grant"){
       Fluttertoast.showToast(
-          msg: "Hibás jelszó vagy felhasználónév",
+          msg: "HibĂĄs jelszĂł vagy felhasznĂĄlĂłnĂŠv",
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0
@@ -167,6 +169,7 @@ class RequestHelper {
     String instCode = user.schoolCode;
     String userName = user.username;
     String password = user.password;
+    String trainingId=user.trainingId;
 
     String jsonBody = "institute_code=" +
         instCode +
@@ -190,6 +193,6 @@ class RequestHelper {
     saveEvents(eventsString, user);
 
     return eventsString;
-  }
+  }*/
 
 }

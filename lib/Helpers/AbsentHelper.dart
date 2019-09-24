@@ -25,12 +25,12 @@ class AbsentHelper {
 
     for (Absence a in absenceList) {
       uniqueAbsence
-          .add(a.LessonStartTime.toIso8601String() + a.owner.id.toString());
+          .add(a.LessonStartTime.toIso8601String() + a.owner.username);
     }
     for (String s in uniqueAbsence) {
       List<Absence> theseAbsences = new List();
       for (Absence a in absenceList)
-        if (a.LessonStartTime.toIso8601String() + a.owner.id.toString() == s)
+        if (a.LessonStartTime.toIso8601String() + a.owner.username == s)
           theseAbsences.add(a);
       absents.putIfAbsent(s, () => theseAbsences);
     }

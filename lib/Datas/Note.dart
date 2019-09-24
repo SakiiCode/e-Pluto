@@ -15,15 +15,17 @@ class Note {
       this.creationDate);
 
   Note.fromJson(Map json) {
-    if (json["EventId"] != null) {
+    /*if (json["EventId"] != null) {
       this.id = json["EventId"];
       isEvent = true;
-    } else
-      this.id = json["NoteId"];
-    this.date = DateTime.parse(json["Date"]);
-    this.content = json["Content"];
-    this.title = json["Title"];
-    this.teacher = json["Teacher"];
-    this.type = json["Type"];
+    } else*/
+      this.id = json["Id"];
+      String sendDate = json["SendDate"];
+      String ms = sendDate.substring(6,19);
+    this.date = DateTime.fromMillisecondsSinceEpoch(int.parse(ms),isUtc:true);
+    this.content = json["Detail"];
+    this.title = json["Subject"];
+    this.teacher = json["Name"];
+    this.type = json["IsNew"].toString();
   }
 }

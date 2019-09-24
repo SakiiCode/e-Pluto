@@ -53,19 +53,18 @@ class Account {
     }
 
     student = Student.fromMap(_studentJson, user);
-    absents = await AbsentHelper().getAbsentsFrom(student.Absences);
+    absents = new Map<String, List<Absence>>();//await AbsentHelper().getAbsentsFrom(student.Absences);
     await _refreshEventsString(isOffline);
-    notes = await NotesHelper().getNotesFrom(
-        _eventsString, json.encode(_studentJson), user);
-    averages =
-    await AverageHelper().getAveragesFrom(json.encode(_studentJson), user);
+    notes = await NotesHelper().getNotesFrom(await new RequestHelper().getMessages(user.schoolUrl,user.username,user.password,user.trainingId), user);
+    averages = new List<Average>();//await AverageHelper().getAveragesFrom(json.encode(_studentJson), user);
   }
 
   Future<void> _refreshEventsString(bool isOffline) async {
-    if (isOffline)
+    /*if (isOffline)
       _eventsString = await readEventsString(user);
     else
-      _eventsString = await RequestHelper().getEventsString(user);
+      _eventsString = await RequestHelper().getEvents(user); //todo eredetileg eventsString*/
+    _eventsString = "";
   }
 
   List<Evaluation> get midyearEvaluations =>
