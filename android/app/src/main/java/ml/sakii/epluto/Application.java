@@ -1,4 +1,4 @@
-package com.example.e_szivacs;
+package ml.sakii.epluto;
 
 import com.transistorsoft.flutter.backgroundfetch.BackgroundFetchPlugin;
 

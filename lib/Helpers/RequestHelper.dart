@@ -14,21 +14,27 @@ class RequestHelper {
 
   Future<String> getInstitutes() async {
     final String url =
-        "mobilecloudservice.cloudapp.net/MobileServiceLib/MobileCloudService.svc/GetAllNeptunMobileUrls";
+        "https://mobilecloudservice.cloudapp.net/MobileServiceLib/MobileCloudService.svc/GetAllNeptunMobileUrls";
 
-    var r = nhttp.NativeHttpRequest.getRequest(url, headers: {
-      "HOST": "kretaglobalmobileapi.ekreta.hu",
-      "apiKey": "7856d350-1fda-45f5-822d-e1a2f3f1acf0"
-    });
+    /*HttpClient client = new HttpClient();
 
-    return r;
+    final HttpClientRequest request = await client.postUrl(Uri.parse(url))
+      ..headers.set("Content-Type","application/json; charset=utf-8")
+          ..headers.set("Content-Length","2")
+          ..headers.set("Expect","100-continue")
+          ..headers.set("Connection","keep-alive")
+          ..headers.set("Host","mobilecloudservice.cloudapp.net")
+    ..add(utf8.encode("{}"));
+
+    return await (await request.close()).transform(utf8.decoder).join();*/
+    return getStuffFromUrl(url, "{}");
     //return json.decode(await response.transform(utf8.decoder).join());
   }
 
   Future<String> getStuffFromUrl(String url, String body) async {
 
     HttpClient client = new HttpClient();
-
+    client.badCertificateCallback = ((X509Certificate cert, String host, int port) => true);//todo ezt minél előbb megszüntetni
     final HttpClientRequest request = await client.postUrl(Uri.parse(url))
       ..headers.set("Content-Type","application/json; charset=utf-8")
       ..headers.set("Content-Length",body.length)
