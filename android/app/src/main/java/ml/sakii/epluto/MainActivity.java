@@ -1,4 +1,4 @@
-package com.example.e_szivacs;
+package ml.sakii.epluto;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

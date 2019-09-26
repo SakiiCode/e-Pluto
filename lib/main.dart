@@ -238,13 +238,21 @@ final passwordController = new TextEditingController();
 class LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
+    loggingIn = false;
     super.initState();
+
+    initJson();
+/*
+    DynamicTheme.of(context).setBrightness(Brightness.light).then((void a){
+      setStateHere();
+    });
+*/
   }
 
   void initJson() async {
-    String data = "";//await DefaultAssetBundle.of(context).loadString("assets/data.json");
+    //String data = "";//await DefaultAssetBundle.of(context).loadString("assets/data.json");
 
-    data = await RequestHelper().getInstitutes();
+    String data = await RequestHelper().getInstitutes();
 
     globals.jsonres = json.decode(data);
 
@@ -299,7 +307,7 @@ class LoginScreenState extends State<LoginScreen> {
           });
           schoolSelected = false;
         } else {
-          String instCode = globals.selectedSchoolCode; //suli kĂłdja
+          /*String instCode = globals.selectedSchoolCode; //suli kódja
           String jsonBody = "institute_code=" +
               instCode +
               "&userName=" +
@@ -346,15 +354,8 @@ class LoginScreenState extends State<LoginScreen> {
             });
             print(e);
             setState(() {
-              if (code == "invalid_grant") {
-                passwordError = "hibĂĄs felasznĂĄlĂłnĂŠv vagy jelszĂł";
-              /*} else if (bearerResp.statusCode == 403) {
-                passwordError = "hibĂĄs felasznĂĄlĂłnĂŠv vagy jelszĂł";*/
-              } else if (code == "invalid_password") {
-                passwordError = "hibĂĄs felasznĂĄlĂłnĂŠv vagy jelszĂł";
-              } else {
-                passwordError = "hĂĄlĂłzati problĂŠma";
-              }
+              passwordError = "bejelentkezési probléma";//TODO rossz jelszót jelezni
+
             });
           }
         }
