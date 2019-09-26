@@ -20,16 +20,8 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }*/
 
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
-    flutterVersionCode = '2034'
-}
-
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
-if (flutterVersionName == null) {
-    flutterVersionName = '2.2.3'
-}
-
+def flutterVersionCode=2035
+def flutterVersionName="2.2.4"
 
 android {
     compileSdkVersion 28
@@ -54,7 +46,7 @@ android {
         applicationId "ml.sakii.epluto"
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode flutterVersionCode.toInteger()
+        versionCode flutterVersionCode
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
