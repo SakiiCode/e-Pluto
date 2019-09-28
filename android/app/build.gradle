@@ -20,9 +20,6 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }*/
 
-def flutterVersionCode=3020
-def flutterVersionName="0.0.2"
-
 android {
     compileSdkVersion 28
 
@@ -46,8 +43,8 @@ android {
         applicationId "ml.sakii.epluto"
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode flutterVersionCode
-        versionName flutterVersionName
+        versionCode 3030
+        versionName "0.0.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 }
