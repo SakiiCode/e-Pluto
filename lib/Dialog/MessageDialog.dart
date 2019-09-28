@@ -22,7 +22,7 @@ class MessageDialogState extends State<MessageDialog> {
   void initState() {
     super.initState();
     currentMessage = widget.message;
-    MessageHelper().getMessageByIdOffline(globals.selectedAccount.user, currentMessage.id).then((Message message){
+    /*MessageHelper().getMessageByIdOffline(globals.selectedAccount.user, currentMessage.id).then((Message message){
       if (message != null) {
         setState(() {
           currentMessage = message;
@@ -35,7 +35,7 @@ class MessageDialogState extends State<MessageDialog> {
           });
         }
       });
-    });
+    });*/
   }
 
   Widget build(BuildContext context) {
@@ -44,9 +44,9 @@ class MessageDialogState extends State<MessageDialog> {
         titlePadding: EdgeInsets.all(15),
         contentPadding: const EdgeInsets.all(15.0),
         children: <Widget>[
-          Container(
-            child: Text(S.of(context).receivers + currentMessage.receivers.join(", "), style: TextStyle(fontWeight: FontWeight.bold),),
-          ),
+          /*Container(
+            child: Text(S.of(context).receivers + currentMessage.seen.toString(), style: TextStyle(fontWeight: FontWeight.bold),),
+          ),*/
           Container(
             child: new Html( data: HtmlUnescape().convert(currentMessage.text)),
           ),

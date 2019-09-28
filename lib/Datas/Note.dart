@@ -19,9 +19,9 @@ class Note {
       this.id = json["EventId"];
       isEvent = true;
     } else*/
-      this.id = json["Id"];
-      String sendDate = json["SendDate"];
-      String ms = sendDate.substring(6,19);
+    this.id = json["Id"];
+    String sendDate = json["SendDate"];
+    String ms = sendDate.substring(6,19);
     this.date = DateTime.fromMillisecondsSinceEpoch(int.parse(ms),isUtc:true);
     this.content = json["Detail"];
     this.title = json["Subject"];

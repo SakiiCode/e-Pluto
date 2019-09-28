@@ -20,8 +20,8 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }*/
 
-def flutterVersionCode=3013
-def flutterVersionName="0.0.1"
+def flutterVersionCode=3020
+def flutterVersionName="0.0.2"
 
 android {
     compileSdkVersion 28

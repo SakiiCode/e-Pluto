@@ -11,25 +11,13 @@ class MessageHelper {
   Future<List<Message>> getMessages(User user) async {
     List<Message> messages = new List();
     try {
-      /* jsonBody =
-          "institute_code=" + user.schoolCode +
-              "&userName=" + user.username +
-              "&password=" + user.password +
-              "&grant_type=password&client_id=919e0c1c-76a2-4646-a2fb-7085bbbf3c56";
-
-      Map<String, dynamic> bearerMap = json.decode(
-          (await RequestHelper().getBearer(jsonBody, user.schoolCode))
-              .body);
-      String code = bearerMap.values.toList()[0];*/
       String messageSting = await RequestHelper().getMessages(user.schoolUrl, user.username, user.password, user.trainingId);
-      var messagesJson = json.decode(messageSting);
+      var messagesJson = json.decode(messageSting)["MessagesList"];
       DBHelper().addMessagesJson(messagesJson, user);
 
       for (var messageElement in messagesJson) {
-        if (messageElement["uzenet"] != null) {
           Message message = Message.fromJson(messageElement);
           messages.add(message);
-        }
       }
       messages.sort((Message a, Message b) => b.date.compareTo(a.date));
     } catch (e) {
@@ -61,18 +49,7 @@ class MessageHelper {
   Future<Message> getMessageById(User user, int id) async {
     Message message;
     try {
-      /*String jsonBody =
-          "institute_code=" + user.schoolCode +
-              "&userName=" + user.username +
-              "&password=" + user.password +
-              "&grant_type=password&client_id=919e0c1c-76a2-4646-a2fb-7085bbbf3c56";
 
-      Map<String, dynamic> bearerMap = json.decode(
-          (await RequestHelper().getBearer(jsonBody, user.schoolCode))
-              .body);
-      String code = bearerMap.values.toList()[0];
-      String messageSting = await RequestHelper().getMessageById(id, code, user.schoolCode);*/
-      //TODO ezt visszaállítani
       String messageSting = await RequestHelper().getMessages(user.schoolUrl, user.username, user.password, user.trainingId);
 
       var messagesJson = json.decode(messageSting);
