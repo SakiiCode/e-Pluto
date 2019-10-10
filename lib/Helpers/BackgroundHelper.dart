@@ -204,8 +204,10 @@ class BackgroundHelper {
     print("accounts.length: " + accounts.length.toString());
     for (Account account in accounts) {
       try {
+
         print(account.user.username);
-        await account.refreshStudentString(true);
+        await account.refreshStudentString(true, showErrors: false);
+
 
         List<Evaluation> offlineEvals = account.student.Evaluations;
         print(offlineEvals.length);
@@ -218,7 +220,7 @@ class BackgroundHelper {
         // testing:
         //offlineAbsences.remove(offlineAbsences.keys.first);
 
-        await account.refreshStudentString(false);
+        await account.refreshStudentString(false, showErrors: false);
 
         List<Evaluation> evals = account.student.Evaluations;
         List<Note> notes = account.notes;
