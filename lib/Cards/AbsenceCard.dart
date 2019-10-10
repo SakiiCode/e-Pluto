@@ -33,7 +33,7 @@ class AbsenceCard extends StatelessWidget {
     }
 
     if (unjust&&!just&&!bejust) {
-      state = "igazolatlan óra :(";
+      state = "igazolatlan";
       color = Colors.red;
     } else if (!unjust&&just&&!bejust) {
       state = "igazolt";
@@ -43,7 +43,7 @@ class AbsenceCard extends StatelessWidget {
       color = Colors.blue;
     } else {
       state="vegyes";
-      color = Colors.black;
+      color = Colors.orange;
     }
     }
 

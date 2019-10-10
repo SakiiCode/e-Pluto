@@ -55,7 +55,7 @@ class S implements WidgetsLocalizations {
   String get delay_mins => "delay time: ";
   String get dep => "substitution";
   String get dep_teacher => "deputy teacher: ";
-  String get disclaimer => "This is an unofficial, nonprofit client application for the e-Kréta system. Since the app was not made by eKRÉTA Informatikai Zrt, please don't use their support. Instead you can write me an email:\neszivacs@gmail.com\n";
+  String get disclaimer => "This is an unofficial client application for the e-Kréta system. Since the app was not made by eKRÉTA Informatikai Zrt, please don't use their support. Instead you can write me an email:\neszivacs@gmail.com\n";
   String get done => "done";
   String get email => "eSzivacs@gmail.com";
   String get endyear => "end-year";
@@ -64,10 +64,10 @@ class S implements WidgetsLocalizations {
   String get flutter => "Flutter";
   String get github => "GitHub";
   String get grade1 => "1 grades:";
-  String get grade2 => "2 grades:\n";
-  String get grade3 => "3 grades:\n";
+  String get grade2 => "2 grades:";
+  String get grade3 => "3 grades:";
   String get grade4 => "4 grades:";
-  String get grade5 => "5 grades:\n";
+  String get grade5 => "5 grades:";
   String get green => "green";
   String get grey => "grey";
   String get group => "class: ";
@@ -134,8 +134,9 @@ class S implements WidgetsLocalizations {
   String get singleuser_mainpage => "Single-user main-page";
   String get sort => "Sort";
   String get sort_eval => "grade";
+  String get sort_real_time => "time of writing";
   String get sort_subject => "subject";
-  String get sort_time => "time";
+  String get sort_time => "upload time";
   String get state => "state: ";
   String get statistics => "Statistics";
   String get subject => "subject: ";
@@ -274,7 +275,7 @@ class $hu extends S {
   @override
   String get administration_time => "naplózás ideje: ";
   @override
-  String get disclaimer => "Ez egy nonprofit kliens alkalmazás az e-Kréta rendszerhez. \n\nMivel az appot nem az eKRÉTA Informatikai Zrt. készítette, ha ötleted van az appal kapcsolatban, kérlek ne az ő ügyfélszolgálatukat terheld, inkább írj nekünk egy e-mailt: \n\neszivacs@gmail.com\n";
+  String get disclaimer => "Ez egy nem-hivatalos kliens alkalmazás az e-Kréta rendszerhez. \n\nMivel az appot nem az eKRÉTA Informatikai Zrt. készítette, ha ötleted van az appal kapcsolatban, kérlek ne az ő ügyfélszolgálatukat terheld, inkább írj nekünk egy e-mailt: \n\neszivacs@gmail.com\n";
   @override
   String get lesson_end => "óra vége: ";
   @override
@@ -314,7 +315,7 @@ class $hu extends S {
   @override
   String get short_friday => "P";
   @override
-  String get sort_time => "idő";
+  String get sort_time => "beírás ideje";
   @override
   String get all_median => "Összes jegy mediánja: ";
   @override
@@ -413,6 +414,8 @@ class $hu extends S {
   String get teacher => "tanár: ";
   @override
   String get short_wednesday => "Sz";
+  @override
+  String get sort_real_time => "írás ideje";
   @override
   String get notworking => "nem működik";
   @override
