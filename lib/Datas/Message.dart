@@ -7,8 +7,8 @@ class Message {
   String subject;
 
   Message.fromJson(Map json) {
-    this.id = json["Id"];
-    this.seen = json["IsNew"];
+    this.id = json["PersonMessageId"];
+    this.seen = !json["IsNew"];
     String sendDate = json["SendDate"];
     String ms = sendDate.substring(6,19);
     this.date = DateTime.fromMillisecondsSinceEpoch(int.parse(ms),isUtc:true);

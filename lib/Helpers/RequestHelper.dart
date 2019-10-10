@@ -75,6 +75,9 @@ class RequestHelper {
     return response;
   }
 
+  void seeMessage(int id, User user) =>
+    getStuffFromUrl(user.schoolUrl+"/SetReadedMessage", '{"PersonMessageId":'+id.toString()+',"TotalRowCount":-1,"ExceptionsEnum":0,"UserLogin":"'+user.username+'","Password":"'+user.password+'","NeptunCode":"'+user.username+'","CurrentPage":0,"StudentTrainingID":'+user.trainingId+',"LCID":1038,"ErrorMessage":null,"MobileVersion":"1.5","MobileServiceVersion":0}');
+
 
 
 /*Future<http.Response> getBearer(String jsonBody, String schoolCode) {
@@ -127,8 +130,8 @@ class RequestHelper {
     }
   }*/
 
-  void seeMessage(int id, User user) async {
-    /*try {
+  /*void seeMessage(int id, User user) async {
+    try {
       String jsonBody =
           "institute_code=" + user.schoolCode +
               "&userName=" + user.username +
@@ -154,8 +157,8 @@ class RequestHelper {
           fontSize: 16.0
       );
       return null;
-    }*/
-  }
+    }
+  }*/
 
   Future<String> getStudentString(User user, {bool showErrors=true}) async {
     String instCode = user.schoolUrl;
