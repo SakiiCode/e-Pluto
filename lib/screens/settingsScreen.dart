@@ -86,12 +86,13 @@ class SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
-  void _setLang(String value) {
-    setState(() {
-      _lang = value;
-      SettingsHelper().setLang(_lang);
-      runApp(Main.MyApp());
-    });
+
+  void _setLang(String value) async {
+    _lang = value;
+    SettingsHelper().setLang(_lang);
+    globals.lang = value;
+
+    runApp(Main.MyApp());
   }
 
   void _setAmoled(bool value) {
