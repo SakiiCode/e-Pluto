@@ -142,14 +142,14 @@ class MainScreenState extends State<MainScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { //todo első indítás után nem lehet kilépni
     return new WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
             drawer: GDrawer(),
             appBar: new AppBar(
               title: new Text(globals.isSingle
-                  ? globals.selectedAccount.user.name
+                  ? globals.selectedAccount.user.username
                   : S.of(context).title),
               actions: <Widget>[
                 //todo search maybe?

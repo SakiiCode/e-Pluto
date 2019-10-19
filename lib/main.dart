@@ -1,16 +1,17 @@
+
 import 'dart:convert' show json;
 import 'dart:io';
 import 'dart:math';
 
 import 'package:background_fetch/background_fetch.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
-import 'package:e_szivacs/Datas/Training.dart';
 import 'package:e_szivacs/generated/i18n.dart';
 import 'package:e_szivacs/screens/messageScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info/package_info.dart';
 
@@ -47,7 +48,7 @@ import 'screens/timeTableScreen.dart';
 bool isNew = true;
 
 final GlobalKey<NavigatorState> navigatorKey =
-GlobalKey(debugLabel: "Main Navigator");
+    GlobalKey(debugLabel: "Main Navigator");
 
 class MyApp extends StatelessWidget {
   @override
@@ -96,20 +97,22 @@ class MyApp extends StatelessWidget {
 
 // todo refactor this and separate the 3 screens here
 
-void main() async {
-  final storage = new FlutterSecureStorage();
-  String value = await storage.read(key: "db_key");
-  if (value == null) {
-    int randomNumber = Random.secure().nextInt(4294967296);
-    await storage.write(key: "db_key", value: randomNumber.toString());
-    value = await storage.read(key: "db_key");
+void main({bool noReset = false}) async {
+  if (!noReset) {
+    final storage = new FlutterSecureStorage();
+    String value = await storage.read(key: "db_key");
+    if (value == null) {
+      int randomNumber = Random.secure().nextInt(4294967296);
+      await storage.write(key: "db_key", value: randomNumber.toString());
+      value = await storage.read(key: "db_key");
+    }
+
+    var codec = getEncryptSembastCodec(password: value);
+
+    globals.db = await globals.dbFactory.openDatabase(
+        (await DBHelper().localFolder) + DBHelper().dbPath,
+        codec: codec);
   }
-
-  var codec = getEncryptSembastCodec(password: value);
-
-  globals.db = await globals.dbFactory.openDatabase(
-      (await DBHelper().localFolder) + DBHelper().dbPath,
-      codec: codec);
   if (await Saver.shouldMigrate) {
     Saver.migrate();
   } else {
@@ -129,12 +132,12 @@ void main() async {
       globals.isColor = await SettingsHelper().getColoredMainPage();
       globals.isSingle = await SettingsHelper().getSingleUser();
       globals.multiAccount = (await Saver.readUsers()).length != 1;
-      globals.users = users;
-      globals.accounts = List();
-      for (User user in users)
-        globals.accounts.add(Account(user));
-      globals.selectedAccount = globals.accounts[0];
-      globals.selectedUser = users[0];
+      if (!noReset) globals.users = users;
+      if (!noReset) globals.accounts = List();
+      if (!noReset)
+        for (User user in users) globals.accounts.add(Account(user));
+      if (!noReset) globals.selectedAccount = globals.accounts[0];
+      if (!noReset) globals.selectedUser = users[0];
       globals.themeID = await SettingsHelper().getTheme();
 
       globals.color1 = await SettingsHelper().getEvalColor(0);
@@ -149,12 +152,17 @@ void main() async {
   }
 }
 
+Future<void> reInit() async {
+  globals.lang = await SettingsHelper().getLang();
+  runApp(MyApp());
+}
+
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-new FlutterLocalNotificationsPlugin();
+    new FlutterLocalNotificationsPlugin();
 
 void backgroundFetchHeadlessTask() async {
   var initializationSettingsAndroid =
-  new AndroidInitializationSettings('notification_icon');
+      new AndroidInitializationSettings('notification_icon');
   var initializationSettingsIOS = new IOSInitializationSettings();
   var initializationSettings = new InitializationSettings(
       initializationSettingsAndroid, initializationSettingsIOS);
@@ -250,13 +258,24 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   void initJson() async {
-    //String data = "";//await DefaultAssetBundle.of(context).loadString("assets/data.json");
+    String data = ""; //await DefaultAssetBundle.of(context).loadString("assets/data.json");
 
-    String data = await RequestHelper().getInstitutes();
+    data = await RequestHelper().getInstitutes();
 
-    globals.jsonres = json.decode(data);
+    try {
+      globals.jsonres = json.decode(data);
+    } catch (e) {
+      print(e);
+      Fluttertoast.showToast(
+        msg: "Nem sikerült lekérni a Krétás iskolákat, így az offline adatbázist fogja használni az app.",
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
 
-    print(globals.jsonres.length);
+      data = await DefaultAssetBundle.of(context).loadString("assets/data.json");
+      globals.jsonres = json.decode(data);
+    }
 
     globals.jsonres.sort((dynamic a, dynamic b) {
       return a["Name"].toString().compareTo(b["Name"].toString());
@@ -288,9 +307,7 @@ class LoginScreenState extends State<LoginScreen> {
         http.Response bearerResp;
         String code;
         if (userName == "") {
-          userError = S
-              .of(context)
-              .choose_username;
+          userError = S.of(context).choose_username;
           setState(() {
             loggingIn = false;
           });
@@ -379,7 +396,7 @@ class LoginScreenState extends State<LoginScreen> {
           context: context,
           builder: (BuildContext context) {
             return new MyDialog();
-          }).then((dynamic){
+          }).then((dynamic) {
         setState(() {});
       });
     });
@@ -387,7 +404,6 @@ class LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return new WillPopScope(
         onWillPop: () {
           if (widget.fromApp)
@@ -399,216 +415,205 @@ class LoginScreenState extends State<LoginScreen> {
                 child: new Center(
                     child: !loggingIn
                         ? new Container(
-                        child: new ListView(
-                          reverse: true,
-                          padding:
-                          EdgeInsets.fromLTRB(20.0, 50.0, 20.0, 20.0),
-                          children: <Widget>[
-                            new Container(
-                              padding: new EdgeInsets.only(
-                                  left: 40.0, right: 40.0),
-                              child: Image.asset("assets/icon.png"),
-                              height: kbSize,
-                            ),
-                            new Container(
-                                margin: EdgeInsets.only(top: 5.0),
-                                child: new Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                            child: new ListView(
+                            reverse: true,
+                            padding:
+                                EdgeInsets.fromLTRB(20.0, 50.0, 20.0, 20.0),
+                            children: <Widget>[
+                              new Container(
+                                padding: new EdgeInsets.only(
+                                    left: 40.0, right: 40.0),
+                                child: Image.asset("assets/icon.png"),
+                                height: kbSize,
+                              ),
+                              new Container(
+                                  margin: EdgeInsets.only(top: 5.0),
+                                  child: new Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        new Flexible(
+                                          child: new TextFormField(
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                            controller: userNameController,
+                                            decoration: InputDecoration(
+                                              prefixIcon:
+                                                  new Icon(Icons.person),
+                                              hintText: S.of(context).username,
+                                              hintStyle: TextStyle(
+                                                  color: Colors.white30),
+                                              errorText: userError,
+                                              fillColor: Color.fromARGB(
+                                                  40, 20, 20, 30),
+                                              filled: true,
+                                              helperText: helpSwitch
+                                                  ? S.of(context).username_hint
+                                                  : null,
+                                              helperStyle: TextStyle(
+                                                  color: Colors.white30),
+                                              contentPadding:
+                                                  EdgeInsets.fromLTRB(
+                                                      5.0, 15.0, 5.0, 15.0),
+                                              border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5.0),
+                                                  gapPadding: 1.0,
+                                                  borderSide: BorderSide(
+                                                    color: Colors.green,
+                                                    width: 2.0,
+                                                  )),
+                                            ),
+                                          ),
+                                        ),
+                                        new IconButton(
+                                            icon: helpIconSwitch,
+                                            onPressed: () {
+                                              setState(() {
+                                                helpToggle();
+                                              });
+                                            })
+                                      ])),
+                              new Container(
+                                  margin: EdgeInsets.only(top: 10.0),
+                                  child: new Row(children: <Widget>[
+                                    new Flexible(
+                                      child: new TextFormField(
+                                        style: TextStyle(color: Colors.white),
+                                        controller: passwordController,
+                                        keyboardType: TextInputType.text,
+                                        obscureText: !showSwitch,
+                                        decoration: InputDecoration(
+                                          prefixIcon: new Icon(Icons.https),
+                                          hintStyle:
+                                              TextStyle(color: Colors.white30),
+                                          hintText: S.of(context).password,
+                                          errorText: passwordError,
+                                          fillColor:
+                                              Color.fromARGB(40, 20, 20, 30),
+                                          filled: true,
+                                          helperText: helpSwitch
+                                              ? S.of(context).password_hint
+                                              : null,
+                                          helperStyle:
+                                              TextStyle(color: Colors.white30),
+                                          contentPadding: EdgeInsets.fromLTRB(
+                                              5.0, 15.0, 5.0, 15.0),
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
+                                              gapPadding: 1.0,
+                                              borderSide: BorderSide(
+                                                color: Colors.deepOrange,
+                                                width: 2.0,
+                                              )),
+                                        ),
+                                      ),
+                                    ),
+                                    new IconButton(
+                                        icon: showIconSwitch,
+                                        onPressed: () {
+                                          setState(() {
+                                            showToggle();
+                                          });
+                                        }),
+                                  ])),
+                              new Column(children: <Widget>[
+                                new Container(
+                                  margin: new EdgeInsets.fromLTRB(
+                                      0.0, 10.0, 0.0, 5.0),
+                                  padding: new EdgeInsets.fromLTRB(
+                                      10.0, 4.0, 10.0, 4.0),
+                                  decoration: new BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    color: Color.fromARGB(40, 20, 20, 30),
+                                    border: new Border.all(
+                                      color: schoolSelected
+                                          ? Colors.black87
+                                          : Colors.red,
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  child: new Row(
                                     children: <Widget>[
-                                      new Flexible(
-                                        child: new TextFormField(
-                                          style:
-                                          TextStyle(color: Colors.white),
-                                          controller: userNameController,
-                                          decoration: InputDecoration(
-                                            prefixIcon:
-                                            new Icon(Icons.person),
-                                            hintText: S
-                                                .of(context)
-                                                .username,
-                                            hintStyle: TextStyle(
-                                                color: Colors.white30),
-                                            errorText: userError,
-                                            fillColor: Color.fromARGB(
-                                                40, 20, 20, 30),
-                                            filled: true,
-                                            helperText: helpSwitch
-                                                ? S
-                                                .of(context)
-                                                .username_hint
-                                                : null,
-                                            helperStyle: TextStyle(
-                                                color: Colors.white30),
-                                            contentPadding:
-                                            EdgeInsets.fromLTRB(
-                                                5.0, 15.0, 5.0, 15.0),
-                                            border: OutlineInputBorder(
-                                                borderRadius:
-                                                BorderRadius.circular(
-                                                    5.0),
-                                                gapPadding: 1.0,
-                                                borderSide: BorderSide(
-                                                  color: Colors.green,
-                                                  width: 2.0,
-                                                )),
+                                      new Text(
+                                        S.of(context).school,
+                                        style: new TextStyle(
+                                            fontSize: 21.0,
+                                            color: Colors.white30),
+                                      ),
+                                      new Expanded(
+                                        child: new FlatButton(
+                                          onPressed: () {
+                                            showSelectDialog();
+                                            setState(() {});
+                                          },
+                                          child: new Text(
+                                            globals.selectedSchoolName ??
+                                                S.of(context).choose,
+                                            style: new TextStyle(
+                                                fontSize: 21.0,
+                                                color: Colors.blue),
                                           ),
                                         ),
                                       ),
-                                      new IconButton(
-                                          icon: helpIconSwitch,
-                                          onPressed: () {
-                                            setState(() {
-                                              helpToggle();
-                                            });
-                                          })
-                                    ])),
-                            new Container(
-                                margin: EdgeInsets.only(top: 10.0),
-                                child: new Row(children: <Widget>[
-                                  new Flexible(
-                                    child: new TextFormField(
-                                      style: TextStyle(color: Colors.white),
-                                      controller: passwordController,
-                                      keyboardType: TextInputType.text,
-                                      obscureText: !showSwitch,
-                                      decoration: InputDecoration(
-                                        prefixIcon: new Icon(Icons.https),
-                                        hintStyle:
-                                        TextStyle(color: Colors.white30),
-                                        hintText: S
-                                            .of(context)
-                                            .password,
-                                        errorText: passwordError,
-                                        fillColor:
-                                        Color.fromARGB(40, 20, 20, 30),
-                                        filled: true,
-                                        helperText: helpSwitch
-                                            ? S
-                                            .of(context)
-                                            .password_hint
-                                            : null,
-                                        helperStyle:
-                                        TextStyle(color: Colors.white30),
-                                        contentPadding: EdgeInsets.fromLTRB(
-                                            5.0, 15.0, 5.0, 15.0),
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                            BorderRadius.circular(5.0),
-                                            gapPadding: 1.0,
-                                            borderSide: BorderSide(
-                                              color: Colors.deepOrange,
-                                              width: 2.0,
-                                            )),
-                                      ),
-                                    ),
-                                  ),
-                                  new IconButton(
-                                      icon: showIconSwitch,
-                                      onPressed: () {
-                                        setState(() {
-                                          showToggle();
-                                        });
-                                      }),
-                                ])),
-                            new Column(children: <Widget>[
-                              new Container(
-                                margin: new EdgeInsets.fromLTRB(
-                                    0.0, 10.0, 0.0, 5.0),
-                                padding: new EdgeInsets.fromLTRB(
-                                    10.0, 4.0, 10.0, 4.0),
-                                decoration: new BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  color: Color.fromARGB(40, 20, 20, 30),
-                                  border: new Border.all(
-                                    color: schoolSelected
-                                        ? Colors.black87
-                                        : Colors.red,
-                                    width: 1.0,
+                                    ],
                                   ),
                                 ),
-                                child: new Row(
-                                  children: <Widget>[
-                                    new Text(
-                                      S
-                                          .of(context)
-                                          .school,
-                                      style: new TextStyle(
-                                          fontSize: 21.0,
-                                          color: Colors.white30),
-                                    ),
-                                    new Expanded(
+                                !schoolSelected
+                                    ? new Text(
+                                        S.of(context).choose_school_warning,
+                                        style: new TextStyle(color: Colors.red),
+                                      )
+                                    : new Container(),
+                              ]),
+                              new Row(
+                                children: <Widget>[
+                                  !Platform.isIOS
+                                      ? new Container(
+                                          //margin: EdgeInsets.only(top: 20.0),
+                                          child: FlatButton(
+                                            onPressed: () {
+                                              Navigator.pushNamed(
+                                                  context, "/import");
+                                            },
+                                            child: new Text("Import"),
+                                            disabledColor:
+                                                Colors.blueGrey.shade800,
+                                            disabledTextColor: Colors.blueGrey,
+                                            color: Colors.green,
+                                            //#2196F3
+                                            textColor: Colors.white,
+                                          ),
+                                          padding: EdgeInsets.only(right: 12),
+                                        )
+                                      : Container(),
+                                  new Expanded(
+                                      //margin: EdgeInsets.only(top: 20.0),
                                       child: new FlatButton(
-                                        onPressed: () {
-                                          showSelectDialog();
-                                          //setState(() {});
-                                        },
-                                        child: new Text(
-                                          globals.selectedSchoolName ?? S.of(context).choose,
-                                          style: new TextStyle(
-                                              fontSize: 21.0,
-                                              color: Colors.blue),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              !schoolSelected
-                                  ? new Text(
-                                S
-                                    .of(context)
-                                    .choose_school_warning,
-                                style: new TextStyle(color: Colors.red),
-                              )
-                                  : new Container(),
-                            ]),
-                            new Row(
-                              children: <Widget>[
-                                new Container(
-                                  //margin: EdgeInsets.only(top: 20.0),
-                                  child: FlatButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(context, "/import");
-                                    },
-                                    child: new Text("Import"),
+                                    onPressed: !loggingIn
+                                        ? () {
+                                            setState(() {
+                                              loggingIn = true;
+                                              login(context);
+                                            });
+                                          }
+                                        : null,
                                     disabledColor: Colors.blueGrey.shade800,
                                     disabledTextColor: Colors.blueGrey,
-                                    color: Colors.green,
+                                    child: new Text(S.of(context).login),
+                                    color: Colors.blue,
                                     //#2196F3
                                     textColor: Colors.white,
-                                  ),
-                                ),
-                                new Container(
-                                  padding: EdgeInsets.all(6),
-                                ),
-                                new Expanded(
-                                  //margin: EdgeInsets.only(top: 20.0),
-                                    child: new FlatButton(
-                                      onPressed: !loggingIn
-                                          ? () {
-                                        setState(() {
-                                          loggingIn = true;
-                                          login(context);
-                                        });
-                                      }
-                                          : null,
-                                      disabledColor: Colors.blueGrey.shade800,
-                                      disabledTextColor: Colors.blueGrey,
-                                      child: new Text(S
-                                          .of(context)
-                                          .login),
-                                      color: Colors.blue,
-                                      //#2196F3
-                                      textColor: Colors.white,
-                                    )),
-                              ],
-                            ),
-                          ].reversed.toList(),
-                        ))
+                                  )),
+                                ],
+                              ),
+                            ].reversed.toList(),
+                          ))
                         : new Container(
-                      child: new CircularProgressIndicator(),
-                    )))));
+                            child: new CircularProgressIndicator(),
+                          )))));
   }
 
   @override
@@ -627,8 +632,7 @@ class MyDialog extends StatefulWidget {
 
   @override
   State createState() {
-    print(globals.jsonres.length);
-    globals.searchres.addAll(globals.jsonres);
+    if (globals.jsonres != null) globals.searchres.addAll(globals.jsonres);
     return myDialogState;
   }
 }
@@ -655,9 +659,7 @@ class MyDialogState extends State<MyDialog> {
 
   Widget build(BuildContext context) {
     return new SimpleDialog(
-      title: new Text(S
-          .of(context)
-          .choose_school),
+      title: new Text(S.of(context).choose_school),
       contentPadding: const EdgeInsets.all(10.0),
       children: <Widget>[
         new Container(
@@ -674,9 +676,9 @@ class MyDialogState extends State<MyDialog> {
         new Container(
           child: globals.searchres != null
               ? new ListView.builder(
-            itemBuilder: _itemBuilder,
-            itemCount: globals.searchres.length,
-          )
+                  itemBuilder: _itemBuilder,
+                  itemCount: globals.searchres.length,
+                )
               : new Container(),
           width: 320.0,
           height: 400.0,
@@ -689,8 +691,6 @@ class MyDialogState extends State<MyDialog> {
     setState(() {
       globals.searchres.clear();
       globals.searchres.addAll(globals.jsonres);
-      print(globals.jsonres.length);
-
     });
 
     if (searchText != "") {
