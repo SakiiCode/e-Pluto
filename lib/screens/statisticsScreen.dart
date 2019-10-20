@@ -1,4 +1,4 @@
-import 'dart:convert' show utf8, json;
+import 'dart:convert' show json;
 import 'dart:ui';
 
 import 'package:charts_flutter/flutter.dart';
@@ -330,7 +330,7 @@ class StatisticsScreenState extends State<StatisticsScreen> {
                 new Text(S
                     .of(context)
                     .all_average, style: TextStyle(fontSize: 21),),
-                new Text(allAverage != null ? allAverage.toStringAsFixed(2):"...", style: TextStyle(fontSize: 21),),
+                new Text(evals.isNotEmpty ? allAverage.toStringAsFixed(2):"...", style: TextStyle(fontSize: 21),), //TODO beküldeni szivacshoz
               ],
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
             ),
@@ -339,7 +339,7 @@ class StatisticsScreenState extends State<StatisticsScreen> {
                 new Text(S
                     .of(context)
                     .all_median, style: TextStyle(fontSize: 21),),
-                new Text(allMedian != null ? allMedian.toStringAsFixed(2):"...", style: TextStyle(fontSize: 21),),
+                new Text(evals.isNotEmpty ? allMedian.toStringAsFixed(2):"...", style: TextStyle(fontSize: 21),), //TODO beküldeni szivacshoz
               ],
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
             ),
@@ -348,7 +348,7 @@ class StatisticsScreenState extends State<StatisticsScreen> {
                 new Text(S
                     .of(context)
                     .all_mode, style: TextStyle(fontSize: 21),),
-                new Text(allMode != null ? allMode.toString():"...", style: TextStyle(fontSize: 21),),
+                new Text(evals.isNotEmpty ? allMode.toString():"...", style: TextStyle(fontSize: 21),), //TODO beküldeni szivacshoz
               ],
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
             ),
@@ -436,9 +436,10 @@ class StatisticsScreenState extends State<StatisticsScreen> {
 
 
     return new WillPopScope(
-        onWillPop: () {
+        onWillPop: () async{
           globals.screen = 0;
           Navigator.pushReplacementNamed(context, "/main");
+          return false;
         },
         child: Scaffold(
             bottomNavigationBar: BottomNavigationBar(
@@ -495,8 +496,9 @@ class StatisticsScreenState extends State<StatisticsScreen> {
   }
 
   Widget _itemBuilder(BuildContext context, int index) {
+    Column c;
     try {
-      return new Column(
+      c = new Column(
         children: <Widget>[
           new Divider(
             height: index != 0 ? 2.0 : 0.0,
@@ -554,6 +556,7 @@ class StatisticsScreenState extends State<StatisticsScreen> {
     } catch (e) {
       print(e);
     }
+    return c;
   }
 
   Future<Null> _evaluationDialog(Evaluation evaluation) async {
@@ -623,6 +626,7 @@ class TimeAverage {
 class GradeDialog extends StatefulWidget {
   Function callback;
   GradeDialog(this.callback);
+  
   @override
   GradeDialogState createState() => new GradeDialogState();
 }
