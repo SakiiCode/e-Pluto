@@ -10,5 +10,8 @@ ios/.generated/
 packages
 .flutter-plugins
 .gradle
-assets/data.json
 android/local.properties
+pubspec.lock
+**/.settings/**
+.project
+.classpath
