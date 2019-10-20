@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:convert' show utf8, json;
+import 'dart:convert' show json;
 
 import 'RequestHelper.dart';
 
@@ -12,36 +12,36 @@ class UserInfoHelper {
     evaluationsMap = await _getEvaluationlist(instCode, userName, password, trainingId);
 
     print(evaluationsMap);
-    String StudentId = evaluationsMap["StudentId"].toString();
-    if (StudentId == null)
-      StudentId = "";
-    String StudentName = evaluationsMap["Name"].toString();
-    if (StudentName == null)
-      StudentName = "";
-//    String ParentId;
-//    String ParentName;
-//    if (evaluationsMap["Tutelary"]==null) {
-//      ParentId = "";
-//      ParentName = "";
-//    } else {
-//      ParentId = evaluationsMap["Tutelary"]["TutelaryId"].toString();
-//      ParentName = evaluationsMap["Tutelary"]["TutelaryName"].toString();
-//    }
-//
-//    String TeacherId;
-//    String TeacherName;
-//    if (evaluationsMap["FormTeacher"]==null) {
-//      TeacherId = "";
-//      TeacherName = "";
-//    } else {
-//      TeacherId = evaluationsMap["FormTeacher"]["TeacherId"].toString();
-//      TeacherName = evaluationsMap["FormTeacher"]["Name"].toString();
-//    }
-//
+    String studentId = evaluationsMap["StudentId"].toString();
+    if (studentId == null)
+      studentId = "";
+    String studentName = evaluationsMap["Name"].toString();
+    if (studentName == null)
+      studentName = "";
+   /*String ParentId;
+   String ParentName;
+   if (evaluationsMap["Tutelary"]==null) {
+     ParentId = "";
+     ParentName = "";
+   } else {
+     ParentId = evaluationsMap["Tutelary"]["TutelaryId"].toString();
+     ParentName = evaluationsMap["Tutelary"]["TutelaryName"].toString();
+   }
+
+   String TeacherId;
+   String TeacherName;
+   if (evaluationsMap["FormTeacher"]==null) {
+     TeacherId = "";
+     TeacherName = "";
+   } else {
+     TeacherId = evaluationsMap["FormTeacher"]["TeacherId"].toString();
+     TeacherName = evaluationsMap["FormTeacher"]["Name"].toString();
+   }*/
+
 
     Map<String, String> infoMap = {
-      "StudentId": StudentId,
-      "StudentName": StudentName,
+      "StudentId": studentId,
+      "StudentName": studentName,
 //      "ParentId": ParentId,
 //      "ParentName": ParentName,
 //      "TeacherId": TeacherId,

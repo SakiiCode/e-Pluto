@@ -1,14 +1,11 @@
 import 'dart:async';
-import 'dart:convert' show utf8, json;
+import 'dart:convert' show utf8;
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
-import 'package:native_http_request/native_http_request.dart' as nhttp;
+
+//import 'package:native_http_request/native_http_request.dart' as nhttp;
 
 import '../Datas/User.dart';
-import '../Utils/Saver.dart';
 
 class RequestHelper {
 

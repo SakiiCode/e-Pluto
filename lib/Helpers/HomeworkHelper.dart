@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert' show json;
 import '../Datas/User.dart';
 import '../Datas/Homework.dart';
-import '../Datas/Lesson.dart';
 import '../Utils/AccountManager.dart';
 import '../Utils/Saver.dart';
 import 'RequestHelper.dart';
@@ -78,12 +77,12 @@ class HomeworkHelper {
       DateTime to = startDate;
 
       String timetableString = (await RequestHelper().getTimeTable(schoolUrl, userName, password, trainingId, from, to));
-      List<dynamic> ttMap = json.decode(timetableString);
+      //List<dynamic> ttMap = json.decode(timetableString);
       saveTimetable(timetableString, from.year.toString()+"-"+from.month.toString()+"-"+from.day.toString()+"_"+to.year.toString()+"-"+to.month.toString()+"-"+to.day.toString(), user);
-      List<Lesson> lessons = new List();
+      //List<Lesson> lessons = new List();
       List<Map<String, dynamic>> hwmapuser = new List();
 
-      /*for (dynamic d in ttMap) { TODO: ez mit csinál
+      /*for (dynamic d in ttMap) { 
         if (d["TeacherHomeworkId"] != null) {
           String homeworkString = (await RequestHelper()
                   .getHomework(instCode, d["TeacherHomeworkId"]));

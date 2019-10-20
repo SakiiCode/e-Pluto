@@ -4,28 +4,20 @@ import 'package:e_szivacs/globals.dart' as globals;
 class ColorManager {
 
   Color getColorSample(int id){
+    Color sample = Colors.blue;
     switch(id) {
-      case 0:
-        return Colors.blue;
-      case 1:
-        return Colors.red;
-      case 2:
-        return Colors.green;
-      case 3:
-        return Colors.lightGreen;
-      case 4:
-        return Colors.yellow;
-      case 5:
-        return Colors.orangeAccent;
-      case 6:
-        return Colors.grey;
-      case 7:
-        return Colors.pink;
-      case 8:
-        return Colors.purple;
-      case 9:
-        return Colors.teal;
+      case 0: sample = Colors.blue; break;
+      case 1: sample = Colors.red; break;
+      case 2: sample = Colors.green; break;
+      case 3: sample = Colors.lightGreen; break;
+      case 4: sample = Colors.yellow; break;
+      case 5: sample = Colors.orangeAccent; break;
+      case 6: sample = Colors.grey; break;
+      case 7: sample = Colors.pink; break;
+      case 8: sample = Colors.purple; break;
+      case 9: sample = Colors.teal; break;
     }
+    return sample;
   }
 
   ThemeData getTheme(brightness) {

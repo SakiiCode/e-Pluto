@@ -12,17 +12,16 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
 import 'package:package_info/package_info.dart';
 
 import 'Datas/Account.dart';
 import 'Datas/Institution.dart';
 import 'Datas/User.dart';
+import 'Datas/Training.dart';
 import 'Helpers/BackgroundHelper.dart';
 import 'Helpers/DBHelper.dart';
 import 'Helpers/RequestHelper.dart';
 import 'Helpers/SettingsHelper.dart';
-import 'Helpers/UserInfoHelper.dart';
 import 'Helpers/encrypt_codec.dart';
 import 'Utils/AccountManager.dart';
 import 'Utils/ColorManager.dart';
@@ -66,7 +65,7 @@ class MyApp extends StatelessWidget {
             supportedLocales: S.delegate.supportedLocales,
             locale: globals.lang != "auto" ? Locale(globals.lang) : null,
             onGenerateTitle: (BuildContext context) => S.of(context).title,
-            title: "e-Szivacs 2",
+            title: "e-Pluto",
             theme: theme,
             routes: <String, WidgetBuilder>{
               '/main': (_) => new MainScreen(),
@@ -85,7 +84,7 @@ class MyApp extends StatelessWidget {
               '/export': (_) => new ExportScreen(),
               '/import': (_) => new ImportScreen(),
               '/easteregg': (_) => new BattleRoyaleScreen(),
-              '/evalcolor': (_) => new colorSettingsScreen(),
+              '/evalcolor': (_) => new ColorSettingsScreen(),
               '/student': (_) => new StudentScreen(),
             },
             navigatorKey: navigatorKey,
@@ -177,9 +176,9 @@ void backgroundFetchHeadlessTask() async {
 LoginScreenState loginScreenState = new LoginScreenState();
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({this.fromApp});
-
-  bool fromApp = false;
+  final bool fromApp;
+  
+  LoginScreen({this.fromApp:false}); //TODO ez lehet rossz itt
 
   @override
   LoginScreenState createState() => LoginScreenState();
@@ -267,7 +266,7 @@ class LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       print(e);
       Fluttertoast.showToast(
-        msg: "Nem sikerült lekérni a Krétás iskolákat, így az offline adatbázist fogja használni az app.",
+        msg: "Nem sikerült lekérni a Neptunos egyetemeket, így az offline adatbázist fogja használni az app.",
         backgroundColor: Colors.red,
         textColor: Colors.white,
         fontSize: 16.0,
@@ -304,8 +303,8 @@ class LoginScreenState extends State<LoginScreen> {
         userError = null;
         passwordError = null;
         schoolSelected = true;
-        http.Response bearerResp;
-        String code;
+        /*http.Response bearerResp;
+        String code;*/
         if (userName == "") {
           userError = S.of(context).choose_username;
           setState(() {
@@ -405,9 +404,11 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
-        onWillPop: () {
+        onWillPop: () async {
           if (widget.fromApp)
             Navigator.pushReplacementNamed(context, "/accounts");
+
+          return false;//TODO nem lehet rendesen kilepni
         },
         child: Scaffold(
             body: new Container(
@@ -710,13 +711,13 @@ class MyDialogState extends State<MyDialog> {
           title: new Text(globals.searchres[index]["Name"]),
           subtitle: new Text(globals.searchres[index]["Url"]),
           onTap: () {
-            globals.selectedSchoolName = globals.searchres[index]["Name"];
-            globals.selectedSchoolCode = globals.searchres[index]["OMCode"];
-            globals.selectedSchoolUrl = globals.searchres[index]["Url"];
+          
+            setState(() {//TODO beküldeni a szivacshoz
+              globals.selectedSchoolName = globals.searchres[index]["Name"];
+              globals.selectedSchoolCode = globals.searchres[index]["OMCode"];
+              globals.selectedSchoolUrl = globals.searchres[index]["Url"];
 
-            setState(() {
               Navigator.pop(context);
-              globals.selectedSchoolName;
             });
           },
         ),

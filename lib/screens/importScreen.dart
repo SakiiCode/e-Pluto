@@ -78,9 +78,10 @@ class ImportScreenState extends State<ImportScreen> {
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
-        onWillPop: () {
+        onWillPop: () async {
           globals.screen = 0;
-          Navigator.pushReplacementNamed(context, "/login");
+          Navigator.pushReplacementNamed(context, "/main");
+          return false;
         },
         child: Scaffold(
           appBar: new AppBar(

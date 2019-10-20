@@ -62,9 +62,10 @@ class EvaluationsScreenState extends State<EvaluationsScreen> {
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
-        onWillPop: () {
+        onWillPop: () async {
           globals.screen = 0;
           Navigator.pushReplacementNamed(context, "/main");
+          return false;
         },
         child: Scaffold(
             drawer: GDrawer(),
@@ -357,6 +358,5 @@ class EvaluationsScreenState extends State<EvaluationsScreen> {
   @override
   void dispose() {
     super.dispose();
-    EvaluationsScreenState().deactivate();
   }
 }

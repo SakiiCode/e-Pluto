@@ -10,12 +10,11 @@ BuildContext ctx;
 
 class GDrawer extends StatefulWidget {
 
-  GDrawerState myState;
+  //GDrawerState myState;
 
   @override
   GDrawerState createState() {
-    myState = new GDrawerState();
-    return myState;
+    return new GDrawerState();
   }
 }
 
@@ -68,8 +67,7 @@ class GDrawerState extends State<GDrawer> {
   }
   @override
   Widget build(BuildContext context) {
-    double c_width = MediaQuery.of(context).size.width*0.5;
-    // TODO: implement build
+    //double cWidth = MediaQuery.of(context).size.width*0.5;
     return new Drawer(
       child: new Container(
         color: Theme.of(context).scaffoldBackgroundColor,

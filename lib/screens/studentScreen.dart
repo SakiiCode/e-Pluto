@@ -16,7 +16,7 @@ class StudentScreen extends StatefulWidget {
 class StudentScreenState extends State<StudentScreen> {
   @override
   Widget build(BuildContext context) {
-    double c_width = MediaQuery.of(context).size.width * 0.5;
+    double width = MediaQuery.of(context).size.width * 0.5;
 
     return new Scaffold(
       drawer: GDrawer(),
@@ -58,7 +58,7 @@ class StudentScreenState extends State<StudentScreen> {
                   }).toList(),
                   crossAxisAlignment: CrossAxisAlignment.end,
                 ),
-                  width: c_width,
+                  width: width,
                   margin: EdgeInsets.only(right: 15, left: 15),
                 ),
               ],
@@ -79,7 +79,7 @@ class StudentScreenState extends State<StudentScreen> {
                   }).toList(),
                   crossAxisAlignment: CrossAxisAlignment.end,
                 ),
-                  width: c_width,
+                  width: width,
                   margin: EdgeInsets.only(right: 15, left: 15),
                 ),
               ],
@@ -98,7 +98,7 @@ class StudentScreenState extends State<StudentScreen> {
                   }).toList(),
                   crossAxisAlignment: CrossAxisAlignment.end,
                 ),
-                  width: c_width,
+                  width: width,
                   margin: EdgeInsets.only(right: 15, left: 15),
                 ),
               ],
@@ -127,7 +127,7 @@ class StudentScreenState extends State<StudentScreen> {
                   }).toList(),
                   crossAxisAlignment: CrossAxisAlignment.start,
                 ),
-                  width: c_width,
+                  width: width,
                   margin: EdgeInsets.only(right: 15, left: 15),
                 ),
               ],

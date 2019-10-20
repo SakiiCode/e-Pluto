@@ -65,9 +65,10 @@ class ExportScreenState extends State<ExportScreen> {
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
-        onWillPop: () {
+        onWillPop: () async {
           globals.screen = 0;
-          Navigator.pushReplacementNamed(context, "/settings");
+          Navigator.pushReplacementNamed(context, "/main");
+          return false;
         },
         child: Scaffold(
             drawer: GDrawer(),

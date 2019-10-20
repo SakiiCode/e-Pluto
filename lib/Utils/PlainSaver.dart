@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:convert' show utf8, json;
+import 'dart:convert' show json;
 import 'dart:io';
 
 import '../Datas/User.dart';
@@ -26,17 +26,18 @@ Future<File> saveEvaluations(String evaluationsString, User user) async {
 }
 
 Future<Map<String, dynamic>> readEvaluations(User user) async {
+  Map<String, dynamic> evaluationsMap = new Map<String, dynamic>(); 
   try {
     final file = await _localEvaluations(user);
     // Read the file
     String contents = await file.readAsString();
 
-    Map<String, dynamic> evaluationsMap = json.decode(contents);
-    return evaluationsMap;
+     evaluationsMap= json.decode(contents);
+    
   } catch (e) {
-    return Map<String, dynamic>();
-    // If we encounter an error, return 0
+    print(e);
   }
+  return evaluationsMap;
 }
 
 Future<File> _localEvents(User user) async {
@@ -53,22 +54,23 @@ Future<File> saveEvents(String eventsString, User user) async {
 }
 
 Future<List<dynamic>> readEvents(User user) async {
+  List<dynamic> eventsMap;
   try {
     final file = await _localEvents(user);
     // Read the file
     String contents = await file.readAsString();
 
-    List<dynamic> eventsMap = json.decode(contents);
-    return eventsMap;
+    eventsMap = json.decode(contents);
   } catch (e) {
-    // If we encounter an error, return 0
+    print(e);
   }
+  return eventsMap;
 }
 
 Future<File> _localNotes(User user) async {
   final path = await _localFolder;
   String suffix = user.username;
-  return new File('$path/notes.json');
+  return new File('$path/notes_$suffix.json'); 
 }
 
 Future<File> saveNotes(String eventsString, User user) async {
@@ -79,22 +81,24 @@ Future<File> saveNotes(String eventsString, User user) async {
 }
 
 Future<List<dynamic>> readNotes(User user) async {
+  List<dynamic> notesMap;
   try {
     final file = await _localNotes(user);
     // Read the file
     String contents = await file.readAsString();
 
-    List<dynamic> notesMap = json.decode(contents);
-    return notesMap;
+    notesMap = json.decode(contents);
   } catch (e) {
-    // If we encounter an error, return 0
+    print(e);
   }
+  return notesMap;
+
 }
 
 Future<File> _localHomework(User user) async {
   final path = await _localFolder;
   String suffix = user.username;
-  return new File('$path/' + suffix + '_homework.json');
+  return new File('$path/homework_$suffix.json');//TODO beküldeni szivacshoz
 }
 
 Future<File> saveHomework(String homeworkString, User user) async {
@@ -136,16 +140,18 @@ Future<File> saveTimetable(String timetableString, String time, User user) async
 }
 
 Future<List<dynamic>> readTimetable(String time, User user) async {
+  List<dynamic> timetableMap;
   try {
     final file = await _localTimeTable(time, user);
     // Read the file
     String contents = await file.readAsString();
 
-    List<dynamic> timetableMap = json.decode(contents);
-    return timetableMap;
+    timetableMap = json.decode(contents);
+    
   } catch (e) {
-    // If we encounter an error, return 0
+    print(e);
   }
+  return timetableMap;
 }
 
 Future<File> get _localSettings async {

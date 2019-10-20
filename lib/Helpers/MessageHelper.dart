@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:convert' show utf8, json;
+import 'dart:convert' show json;
 
 import 'package:e_szivacs/Helpers/RequestHelper.dart';
 

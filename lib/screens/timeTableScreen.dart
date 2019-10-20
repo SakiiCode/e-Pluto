@@ -139,19 +139,15 @@ class TimeTableScreenState extends State<TimeTableScreen>
     super.dispose();
   }
 
-  void _nextPage(int delta) {
-    final int newIndex = _tabController.index + delta;
-    if (newIndex < 0 || newIndex >= _tabController.length) return;
-    _tabController.animateTo(newIndex);
-  }
 
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
-      onWillPop: () {
-        globals.screen = 0;
-        Navigator.pushReplacementNamed(context, "/main");
-      },
+      onWillPop: () async {
+          globals.screen = 0;
+          Navigator.pushReplacementNamed(context, "/main");
+          return false;
+        },
       child: new DefaultTabController(
         length: tabLength,
         child: new Scaffold(

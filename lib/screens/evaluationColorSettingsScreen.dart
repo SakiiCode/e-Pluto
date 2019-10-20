@@ -8,12 +8,12 @@ import '../GlobalDrawer.dart';
 import '../Helpers/SettingsHelper.dart';
 import '../globals.dart' as globals;
 
-class colorSettingsScreen extends StatefulWidget {
+class ColorSettingsScreen extends StatefulWidget {
   @override
-  colorSettingsScreenState createState() => new colorSettingsScreenState();
+  ColorSettingsScreenState createState() => new ColorSettingsScreenState();
 }
 
-class colorSettingsScreenState extends State<colorSettingsScreen> {
+class ColorSettingsScreenState extends State<ColorSettingsScreen> {
   List<Color> evalColors = [
     Colors.red,
     Colors.brown,
@@ -62,9 +62,10 @@ class colorSettingsScreenState extends State<colorSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
-        onWillPop: () {
-          globals.screen = 0;
-          Navigator.pushReplacementNamed(context, "/settings");
+        onWillPop: () async { //TODO beküldeni szivacshoz
+          globals.screen = 7;
+          //Navigator.pushReplacementNamed(context, "/settings");
+          return true;
         },
         child: Scaffold(
           drawer: GDrawer(),

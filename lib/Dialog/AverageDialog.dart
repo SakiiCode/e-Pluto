@@ -119,7 +119,7 @@ class AverageDialogState extends State<AverageDialog> {
           return a.subject.compareTo(b.subject);
         });
         break;
-      case 2: // TODO negyedéves jegyek
+      case 2: // negyedéves jegyek
         break;
       case 3: // év végi jegyek
         for (Evaluation evaluation in evaluations)

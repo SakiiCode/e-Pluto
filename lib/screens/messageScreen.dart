@@ -33,9 +33,10 @@ class MessageScreenState extends State<MessageScreen> {
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
-        onWillPop: () {
+        onWillPop: () async {
           globals.screen = 0;
           Navigator.pushReplacementNamed(context, "/main");
+          return false;
         },
         child: Scaffold(
             drawer: GDrawer(),
@@ -152,6 +153,5 @@ class MessageScreenState extends State<MessageScreen> {
   @override
   void dispose() {
     super.dispose();
-    MessageScreenState().deactivate();
   }
 }

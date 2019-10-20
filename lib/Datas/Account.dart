@@ -3,13 +3,10 @@ import 'dart:convert' show json;
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import '../Helpers/AbsentHelper.dart';
-import '../Helpers/AverageHelper.dart';
+
 import '../Helpers/DBHelper.dart';
 import '../Helpers/MessageHelper.dart';
-import '../Helpers/NotesHelper.dart';
 import '../Helpers/RequestHelper.dart';
-import '../Utils/Saver.dart';
 import 'Average.dart';
 import 'Message.dart';
 import 'Note.dart';
@@ -21,7 +18,7 @@ class Account {
 
   User user;
   Map _studentJson;
-  String _eventsString;
+  //String _eventsString;
   Map<String, List<Absence>> absents;
   List<Note> notes;
   List<Average> averages;
@@ -63,8 +60,8 @@ class Account {
     /*if (isOffline)
       _eventsString = await readEventsString(user);
     else
-      _eventsString = await RequestHelper().getEvents(user); //todo eredetileg eventsString*/
-    _eventsString = "";
+      _eventsString = await RequestHelper().getEvents(user); //todo eredetileg eventsString
+    _eventsString = "";*/
   }
 
   List<Evaluation> get midyearEvaluations =>

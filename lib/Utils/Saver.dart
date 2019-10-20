@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:convert' show json, ascii, base64, utf8;
+import 'dart:convert' show json;
 import 'dart:io';
 
 import '../Datas/User.dart';
@@ -79,13 +79,14 @@ Future<File> saveEvaluations(String evaluationsString, User user) async {
 }
 
 Future<String> readStudent(User user) async {
+  String contents;
   try {
     final file = await _localEvaluations(user);
-    String contents = await doDecrypt(await file.readAsString());
-    return contents;
+    contents = await doDecrypt(await file.readAsString());
   } catch (e) {
     print(e);
   }
+  return contents;
 }
 
 Future<File> _localEvents(User user) async {
@@ -100,19 +101,20 @@ Future<File> saveEvents(String eventsString, User user) async {
 }
 
 Future<String> readEventsString(User user) async {
+  String contents;
   try {
     final file = await _localEvents(user);
-    String contents = await doDecrypt(await file.readAsString());
-    return contents;
+    contents = await doDecrypt(await file.readAsString());
   } catch (e) {
     print(e);
   }
+  return contents;
 }
 
 Future<File> _localHomework(User user) async {
   final path = await _localFolder;
   String suffix = user.username;
-  return new File('$path/' + suffix + '_homework.json');
+  return new File('$path/homework_$suffix.json');//TODO beküldeni szivacshoz
 }
 
 Future<File> saveHomework(String homeworkString, User user) async {
@@ -150,14 +152,17 @@ Future<File> saveTimetable(String timetableString, String time, User user) async
 }
 
 Future<List<dynamic>> readTimetable(String time, User user) async {
+  List<dynamic> timetableMap;
   try {
     final file = await _localTimeTable(time, user);
     String contents = await doDecrypt(await file.readAsString());
 
-    List<dynamic> timetableMap = json.decode(contents);
-    return timetableMap;
+     timetableMap = json.decode(contents);
   } catch (e) {
+    print(e);
   }
+  return timetableMap;
+  
 }
 
 Future<File> get _localSettings async {

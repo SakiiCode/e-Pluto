@@ -35,9 +35,10 @@ class NotesScreenState extends State<NotesScreen> {
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
-        onWillPop: () {
+        onWillPop: () async {
           globals.screen = 0;
           Navigator.pushReplacementNamed(context, "/main");
+          return false;
         },
         child: Scaffold(
             drawer: GDrawer(),

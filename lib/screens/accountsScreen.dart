@@ -26,19 +26,21 @@ class AccountsScreen extends StatefulWidget {
 class AccountsScreenState extends State<AccountsScreen> {
 
   Color selected;
+  //List<User> users;
+  List<Widget> accountListWidgets;
 
   void addPressed() {
     setState(() {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen(fromApp: true,)),
+        MaterialPageRoute(builder: (context) => LoginScreen(fromApp: true)),
       );
     });
 
   }
-  List<User> users;
-  void _getUserList() async {
-    users = await AccountManager().getUsers();
+
+  Future<List<User>> _getUserList() async { // TODO beküldeni PR-be a szivacshoz
+    return await AccountManager().getUsers();
   }
 
   @override
@@ -51,7 +53,7 @@ class AccountsScreenState extends State<AccountsScreen> {
   }
 
   void performInitState() async {
-    await _getUserList();
+    _getUserList();
     _getListWidgets();
   }
 
@@ -77,6 +79,7 @@ class AccountsScreenState extends State<AccountsScreen> {
                 .ok),
             onPressed: () async {
               Navigator.of(context).pop();
+              List<User> users = await _getUserList();
               users[users.map((User u) => u.username).toList().indexOf(user.username)]
                   .color = selected;
               await saveUsers(users);
@@ -98,8 +101,10 @@ class AccountsScreenState extends State<AccountsScreen> {
   }
 
   void _getListWidgets() async {
-    if (users.isEmpty)
+    List<User> userList = await _getUserList();
+    if (userList.isEmpty)
       Navigator.pushNamed(context, "/login");
+
     accountListWidgets = new List();
     for (Account a in globals.accounts) {
       setState(() {
@@ -203,34 +208,37 @@ class AccountsScreenState extends State<AccountsScreen> {
     );
   }
 
-  List<Widget> accountListWidgets;
+
 
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
-      onWillPop: () {
+      onWillPop: () async{
         globals.screen = 0;
         Navigator.pushReplacementNamed(context, "/main");
+        return false;
       },
-        child: Scaffold(
-          drawer: GDrawer(),
-            appBar: new AppBar(
-              title: new Text(S
-                  .of(context)
-                  .accounts),
-              actions: <Widget>[
-              ],
-            ),
-            body: new Container(
-              child: new Center(
-                child: new Container(
-                  child: accountListWidgets != null ? new ListView(
-                    children:  accountListWidgets ,
-                  ) : new CircularProgressIndicator()
-                ),
+      child: Scaffold(
+        drawer: GDrawer(),
+          appBar: new AppBar(
+            title: new Text(S.of(context).accounts)/*,
+            actions: <Widget>[
+            ],*/
+          ),
+          body: accountListWidgets != null ? new ListView(
+              children:  accountListWidgets ,
+            ) : new CircularProgressIndicator()
+          
+          /*body: new Container(
+            child: new Center(
+              child: new Container(
+                child: accountListWidgets != null ? new ListView(
+                  children:  accountListWidgets ,
+                ) : new CircularProgressIndicator()
               ),
             ),
-        ),
+          ),*/
+      ),
     );
   }
 }

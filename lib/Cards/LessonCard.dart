@@ -25,11 +25,14 @@ class LessonCard extends StatelessWidget {
   }
 
   Lesson getNext() {
+    Lesson result;
     for (Lesson l in lessons) {
       if (l.start.isAfter(now)) {
-        return l;
+        result = l;
+        break;
       }
     }
+    return result;
   }
 
   String getDurToNext() {

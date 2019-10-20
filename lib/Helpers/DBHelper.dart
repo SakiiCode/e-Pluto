@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:path_provider/path_provider.dart';
+//import 'package:sembast/sembast.dart';
 
 import '../Datas/User.dart';
 import '../globals.dart';
@@ -18,21 +19,21 @@ class DBHelper {
     List<Map<String, dynamic>> userMap = new List();
     for (User user in users)
       userMap.add(user.toMap());
-    bool noData = true;
-    noData = (await getUserJson()).isEmpty;
-    if (noData)
-      await store.record('users_json').add(db, userMap);
-    else
-      await store.record('users_json').update(db, userMap);
+    await store.record('users_json').put(db, userMap); //TODO beküldeni szivacshoz
   }
 
   Future<List<Map<String, dynamic>>> getUserJson() async {
     List<Map<String, dynamic>> userMap = new List();
     try {
       List<dynamic> userList = await store.record('users_json').get(db) as List;
-      for (dynamic d in userList)
-        userMap.add(d as Map<String, dynamic>);
-    } catch (e) {}
+      if(userList != null){ //elso inditasnal
+      
+        for (dynamic d in userList)
+          userMap.add(d as Map<String, dynamic>);
+      }
+    } catch (e) {
+      print(e);
+    }
     return userMap;
   }
 

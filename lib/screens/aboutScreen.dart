@@ -56,9 +56,10 @@ class AboutScreenState extends State<AboutScreen> {
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
-        onWillPop: () {
+        onWillPop: () async {
           globals.screen = 0;
-          Navigator.pushReplacementNamed(context, "/settings");
+          //Navigator.pushReplacementNamed(context, "/settings");
+          return true;
         },
         child: Scaffold(
           drawer: GDrawer(),

@@ -238,9 +238,10 @@ class SettingsScreenState extends State<SettingsScreen> {
     ];
 
     return new WillPopScope(
-        onWillPop: () {
+        onWillPop: () async {
           globals.screen = 0;
           Navigator.pushReplacementNamed(context, "/main");
+          return false;
         },
         child: Scaffold(
           drawer: GDrawer(),
