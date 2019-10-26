@@ -43,8 +43,8 @@ android {
         applicationId "ml.sakii.epluto"
         minSdkVersion 18
         targetSdkVersion 28
-        versionCode 3030
-        versionName "0.0.3"
+        versionCode 3040
+        versionName "0.0.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 }
