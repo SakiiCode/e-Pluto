@@ -36,10 +36,8 @@ class LessonCard extends StatelessWidget {
   }
 
   String getDurToNext() {
-    return getNext().start
-        .difference(now)
-        .inMinutes
-        .toString();
+    int time = getNext().start.difference(now).inMinutes-120;
+    return time.toString();
   }
 
   String progress() {
