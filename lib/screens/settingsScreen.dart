@@ -79,13 +79,13 @@ class SettingsScreenState extends State<SettingsScreen> {
   Future<bool> get canSyncOnData async =>
       await SettingsHelper().getCanSyncOnData();
 
-  void _setNextLesson(bool value) async {
+  /*void _setNextLesson(bool value) async {
     setState(() {
       nextLesson = value;
       SettingsHelper().setNextLesson(nextLesson);
       flutterLocalNotificationsPlugin.cancel(0);
     });
-  }
+  }*/
 
 
   void _setLang(String value) async {

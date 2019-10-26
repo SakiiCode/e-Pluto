@@ -129,7 +129,7 @@ class BackgroundHelper {
 
       // Értesítés a következő óráról WIP
 
-      if (false) {
+      /*if (false) {
         print("1");
         if (lesson.date.isAfter(DateTime.now()) && lesson.id != lessons.last.id) {
           print("2");
@@ -154,7 +154,7 @@ class BackgroundHelper {
             );
           }
         }
-      }
+      }*/
 
       for (Lesson offlineLesson in lessonsOffline) {
         exist = (lesson.id == offlineLesson.id &&
