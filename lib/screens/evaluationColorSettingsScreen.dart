@@ -62,7 +62,7 @@ class ColorSettingsScreenState extends State<ColorSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return new WillPopScope(
-        onWillPop: () async { //TODO beküldeni szivacshoz
+        onWillPop: () async {
           globals.screen = 7;
           //Navigator.pushReplacementNamed(context, "/settings");
           return true;

@@ -712,7 +712,7 @@ class MyDialogState extends State<MyDialog> {
           subtitle: new Text(globals.searchres[index]["Url"]),
           onTap: () {
           
-            setState(() {//TODO beküldeni a szivacshoz
+            setState(() {
               globals.selectedSchoolName = globals.searchres[index]["Name"];
               globals.selectedSchoolCode = globals.searchres[index]["OMCode"];
               globals.selectedSchoolUrl = globals.searchres[index]["Url"];

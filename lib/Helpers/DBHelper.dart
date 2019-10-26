@@ -19,7 +19,7 @@ class DBHelper {
     List<Map<String, dynamic>> userMap = new List();
     for (User user in users)
       userMap.add(user.toMap());
-    await store.record('users_json').put(db, userMap); //TODO beküldeni szivacshoz
+    await store.record('users_json').put(db, userMap);
   }
 
   Future<List<Map<String, dynamic>>> getUserJson() async {

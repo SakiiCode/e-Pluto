@@ -114,7 +114,7 @@ Future<String> readEventsString(User user) async {
 Future<File> _localHomework(User user) async {
   final path = await _localFolder;
   String suffix = user.username;
-  return new File('$path/homework_$suffix.json');//TODO beküldeni szivacshoz
+  return new File('$path/homework_$suffix.json');
 }
 
 Future<File> saveHomework(String homeworkString, User user) async {

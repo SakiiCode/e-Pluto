@@ -39,7 +39,7 @@ class AccountsScreenState extends State<AccountsScreen> {
 
   }
 
-  Future<List<User>> _getUserList() async { // TODO beküldeni PR-be a szivacshoz
+  Future<List<User>> _getUserList() async {
     return await AccountManager().getUsers();
   }
 
