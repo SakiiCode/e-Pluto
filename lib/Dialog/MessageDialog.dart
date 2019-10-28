@@ -45,7 +45,14 @@ class MessageDialogState extends State<MessageDialog> {
             child: Text(S.of(context).receivers + currentMessage.seen.toString(), style: TextStyle(fontWeight: FontWeight.bold),),
           ),*/
           Container(
-            child: new Html( data: HtmlUnescape().convert(currentMessage.text)),
+            child: 
+            
+            currentMessage.text.contains(new RegExp(r'[A-z]\r\n[A-z]'))?
+              new Html( data: HtmlUnescape().convert(currentMessage.text.replaceAll("\r\n\r\n", "<br>").replaceAll("\r\n", " ")))
+            :
+              new Html( data: HtmlUnescape().convert(currentMessage.text.replaceAll("\r\n", "<br>"))),
+
+            
           ),
           Container(
             child: Text(currentMessage.senderName, textAlign: TextAlign.end, style: TextStyle(fontSize: 16),),
