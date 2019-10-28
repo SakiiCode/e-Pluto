@@ -39,8 +39,8 @@ Account selectedAccount;
 
 List<Evaluation> evals = new List();
 
-bool isDark = true;
-bool isAmoled = true;
+bool isDark = false;
+bool isAmoled = false;
 bool canSyncOnData = true;
 
 List<Evaluation> global_evals = new List();
