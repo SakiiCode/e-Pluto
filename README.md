@@ -1,3 +1,11 @@
+##### A vártnál bonyolultabb inkompatibilitások miatt ez a repo archiválva lett, és az e-Szivacstól független, de ugyanilyen Flutter-alapú NEPTUN klienst szeretnék létrehozni: https://github.com/SakiiCode/e_pluto
+\
+\
+\
+\
+\---
+
+
 # e-Szivacs 2.0
 
 Az e-Szivacs 2: egy multiplatformos kliensalkalmazás az e-Kréta rendszerhez.
