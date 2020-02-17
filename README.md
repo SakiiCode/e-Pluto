@@ -1,4 +1,4 @@
-##### A vártnál bonyolultabb inkompatibilitások miatt ez a repo archiválva lett, és az e-Szivacstól független, de ugyanilyen Flutter-alapú NEPTUN klienst szeretnék létrehozni: https://github.com/SakiiCode/e_pluto
+##### A vártnál bonyolultabb inkompatibilitások miatt ez a repo archiválva lett, és az e-Szivacstól független, de ugyanilyen Flutter-alapú NEPTUN és Moodle klienst szeretnék létrehozni: https://github.com/SakiiCode/e_pluto
 \
 \
 \
